@@ -1,4 +1,4 @@
-covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,2),sigma2=1,scale=c(1,1),path=myfortranpath,plot=TRUE,nlevels=10)
+covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,2),sigma2=1,scale=c(1,1),plot=TRUE,nlevels=10)
 {
 
   nt <- length(times)
@@ -10,8 +10,7 @@ covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,2),sigma2=1,
   storage.mode(gs) <- "double"
 
 #  dyn.load("/home/gabriel/functions/SimulSTPP/libF/covst.dll")
-  pathname <- paste(path,"covst.dll",sep="")
-  dyn.load(pathname)
+
   gs <- .Fortran("covst",
                  (gs),
                  as.double(dist),

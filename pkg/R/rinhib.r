@@ -48,7 +48,7 @@ rinhib <- function(npoints,s.region,t.region,hs="step",ps="min",thetas=0,deltas,
   if (!(is.function(hs)))
     {
       if ((inhibition==TRUE) && (thetas==0) && (hs=="step") && (npoints * pi * deltas^2/4 > areapl(s.region)))
-        stop(paste("s.region is too small to fit", npoints, "points", "at minimum distance", delta[1]))
+        stop(paste("s.region is too small to fit", npoints, "points", "at minimum distance", deltas))
     
       if ((inhibition==TRUE) && (thetas==0) && (hs=="step") && ((max(t.region)-min(t.region))/deltat<npoints))
         stop(paste("t.region is too small to fit", npoints, "points", "at minimum time interval", deltat))

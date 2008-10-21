@@ -1,4 +1,4 @@
-gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,exact=TRUE,path=myfortranpath)
+gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,exact=TRUE)
 {
 
   N <- c(nx,ny,nt)
@@ -16,9 +16,6 @@ gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="ex
       
       storage.mode(L) <- "double"
       
-#      dyn.load("/home/gabriel/functions/SimulSTPP/libF/circ.dll")
-      pathname <- paste(path,"circ.dll",sep="")
-      dyn.load(pathname)
       res <- .Fortran("circ",
                       (L),
                       as.integer(M),

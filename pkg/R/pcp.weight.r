@@ -1,4 +1,4 @@
-pcp.weight <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", maxrad, infecD=TRUE, path=myfortranpath, ...)
+pcp.weight <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", maxrad, infecD=TRUE, ...)
 {
   if (missing(cluster)) cluster <- "uniform"
   
@@ -30,9 +30,7 @@ pcp.weight <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=N
   bsupt <- t.region[2]
   W <- rep(0,npar)
   cont <- as.numeric(infecD)
-#  dyn.load("/home/gabriel/functions/SimulSTPP/libF/edgecorrect.dll")
- pathname <- paste(path,"edgecorrect.dll",sep="")
-  dyn.load(pathname)
+
   weight <- .Fortran("edgecorrect", as.double(parpts[,1]),
                      as.double(parpts[,2]), as.double(parpts[,3]), 
                      as.integer(npar), as.double(polyx),
