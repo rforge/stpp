@@ -1,0 +1,12 @@
+Package: stpp
+Type: Package
+Title: Space-Time Point Pattern simulation, visualisation and analysis
+Version: 0.1
+Date: 2008-10-16
+Author: Edith Gabriel
+Maintainer: Edith Gabriel <edith.gabriel@univ-avignon.fr>
+Depends: R (>= 2.2.0)
+Description: A package for analysing space-time point patterns
+License: GPL-3
+LazyLoad: yes
+
