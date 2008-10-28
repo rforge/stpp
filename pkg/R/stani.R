@@ -77,7 +77,7 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
   ylim=.ranger(xyt[,2])
   tlim=.ranger(xyt[,3])
 
-  plot3d(xlim,ylim,tlim,xlab="",ylab="",zlab="",axes=FALSE)
+  plot3d(xlim,ylim,tlim,xlab="",ylab="",zlab="",axes=FALSE,type="n")
   par3d(FOV=1)
   ## aspect ratio...
   AR=diff(xlim)/diff(ylim)
