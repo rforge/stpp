@@ -32,20 +32,28 @@
 
 .rp.stan3d <- function(xyt,tlim,twid,states) {
   t=tlim[1];width=twid
+  e=new.env()
   stan.panel  <- rp.control(title="space-time animation",
                             xyt=xyt, t=tlim[1], width=twid,
-                            states=states
+                            states=states,
+                            e=e
                             )
   rp.slider(stan.panel, t, title = "time", from=tlim[1], to=tlim[2], action = .stan3d.redraw,showvalue=TRUE)
   rp.slider(stan.panel, width, title = "window", from=0, to=diff(tlim), action = .stan3d.redraw,showvalue=TRUE)
   rp.button(stan.panel,action=function(p){par3d(userMatrix = rotationMatrix(0, 1,0,0));return(p)},title="align time axis")
-  rp.button(stan.panel,action=function(p){return(p)},title="quit",quitbutton=TRUE)
+  rp.button(stan.panel,action=.quitStore,title="quit",quitbutton=TRUE)
   rp.do(stan.panel, .stan3d.redraw)
   rp.block(stan.panel)
-  
+  return(e)
 }
 
-stani=function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states){
+.quitStore = function(panel){
+ assign("t",panel$t,env=panel$e)
+ assign("width",panel$width,env=panel$e)
+ return(panel)
+}
+
+stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states){
   require(rgl)
   require(rpanel)
   if(missing(states)){
@@ -79,16 +87,17 @@ stani=function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FAL
   for(i in 1:(dim(xyt)[1])){
     xyt[i,4]=points3d(xyt[,1],xyt[,2],xyt[,3])
   }
-  .rp.stan3d(xyt,tlim,twid,states)
+  env = .rp.stan3d(xyt,tlim,twid,states)
+  ret=list()
+  for(n in ls(env)){
+    ret[[n]]=get(n,env=env)
+  }
+  return(ret)
 }
 
-.ranger=function(x,margin=0.2){
+.ranger <- function(x,margin=0.2){
   lim=range(x,na.rm=TRUE)
   lim=lim+c(-margin,margin)*diff(lim)
   return(lim)
 }
 
-#n=100
-#data=cbind(runif(n),runif(n),rnorm(n))
-
-#stan3d(data,persist=FALSE)
