@@ -46,7 +46,7 @@ are reset for each of the sets of points.
 
 }
 \value{
-None
+A list of the slider parameters when the dialog is quitted.
 }
 \author{Barry Rowlingson <b.rowlingson@lancaster.ac.uk>}
 
