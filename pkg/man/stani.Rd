@@ -1,6 +1,6 @@
 \name{stani}
 \alias{stani}
-\title{3D space-time data animation}
+\title{(3D) space-time data animation}
 \description{
  Displays (x,y,t) point data and enables dynamic highlighting of time slices.
 }
