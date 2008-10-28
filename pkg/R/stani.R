@@ -39,7 +39,9 @@
   rp.slider(stan.panel, t, title = "time", from=tlim[1], to=tlim[2], action = .stan3d.redraw,showvalue=TRUE)
   rp.slider(stan.panel, width, title = "window", from=0, to=diff(tlim), action = .stan3d.redraw,showvalue=TRUE)
   rp.button(stan.panel,action=function(p){par3d(userMatrix = rotationMatrix(0, 1,0,0));return(p)},title="align time axis")
+  rp.button(stan.panel,action=function(p){return(p)},title="quit",quitbutton=TRUE)
   rp.do(stan.panel, .stan3d.redraw)
+  rp.block(stan.panel)
   
 }
 
@@ -49,10 +51,10 @@ stani=function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FAL
   if(missing(states)){
     ## default colouring scheme:
     states=list(
-      s1=list(col="blue",radius=1/80,alpha=1.0),
-      s2=list(col="red",radius=1/20,alpha=1.0),
+      s1=list(col="blue",radius=1/80,alpha=0.5,lit=FALSE),
+      s2=list(col="red",radius=1/20,alpha=0.5,lit=FALSE),
       ## still-to-come points are invisible (alpha=0)
-      s3=list(col="yellow",alpha=0.0,radius=1/80)
+      s3=list(col="yellow",alpha=0.0,radius=1/80,lit=FALSE)
       )
     if(persist){
       states$s1=states$s2
