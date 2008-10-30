@@ -56,7 +56,7 @@
  return(panel)
 }
 
-stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states){
+stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12))){
   require(rgl)
   require(rpanel)
   if(missing(states)){
@@ -84,6 +84,26 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
     
   .setPlot(xr[1],xr[2],yr[1],yr[2],tr[1],tr[2],maxRadius)
 
+  if(!missing(bgpoly)){
+    poly=rbind(bgpoly,bgpoly[1,])
+    poly=cbind(poly,min(tr))
+    lines3d(poly,size=2.0)
+    if(bgframe){
+      ci=chull(bgpoly)
+      nci=length(ci)
+      cpoints=bgpoly[ci,]
+      cpoints2 = cpoints[rep(1:nci,rep(2,nci)),]
+      cpoints2 = cbind(cpoints2,c(min(tr),max(tr)))
+      segments3d(cpoints2)
+      poly=cbind(poly[,1:2],max(tr))
+      lines3d(poly,size=2.0)
+    }
+  }
+
+  if(!missing(bgimage)){
+    .setBG(bgimage,min(tr),col=bgcol)
+  }
+  
   xyt=data.frame(xyt)
   xyt$id=NA
   ## initially all points will need redrawing:
@@ -126,4 +146,7 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
 
 }
 
-  
+.setBG=function(xyz,zplane,col=heat.colors(12)){
+  cols = col[as.integer(cut(xyz$z,length(col)))]
+  surface3d(xyz$x,xyz$y,rep(zplane,prod(dim(xyz$z))),col=cols,lit=FALSE)
+}

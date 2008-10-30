@@ -13,6 +13,11 @@ stani(xyt, tlim = range(xyt[, 3], na.rm = TRUE), twid = diff(tlim)/20, persist =
   \item{twid}{The initial time window width}
   \item{persist}{Whether to display points before time window}
   \item{states}{How to display points - see Details}
+  \item{bgpoly}{A polygon to draw on the background plane}
+  \item{bgframe}{Whether to extend the bgpoly to the front plane}
+  \item{bgimage}{An list with x,y vectors and z matrix to display on the
+    background plane}
+  \item{bgcol}{A colour palette vector with which to draw the bgimage}
 }
 \details{
 This function requires the \code{rpanel} and \code{rgl} packages. It
@@ -43,6 +48,19 @@ identical parameters for states 1 and 2.
 Note that each state element should specify all material3d parameters
 used in any of the state elements. This is to make sure the parameters
 are reset for each of the sets of points.
+
+The background polygon must be a simple 2-column vector of x and y
+coordinates. When used with bgframe=TRUE, the polygon is also drawn on
+the front plane, and the convex hull points are connected front to back
+in order to visualise the space-time prism that the data are contained
+in.
+
+A raster image can be displayed on the back plane by setting the bgimage
+parameter. This must be a list with x, y and z components as needed by
+the image function. Note that x and y define the center of cells and so
+must be the same length as the dimensions of z - the image function can
+accept x and y values that are one longer than the dimensions of z to
+define the edges, but bgimage does not allow that.
 
 }
 \value{
