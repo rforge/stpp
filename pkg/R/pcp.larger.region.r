@@ -188,6 +188,8 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
     }
     
   pts <- pattern.interm[,1:3]
+  ott<-order(pts[,3])
+  pts<-pts[ott,]
   invisible(return(list(pts=pts,s.larger=s.larger,t.larger=t.larger,index.child=pattern.interm[,4],nchild=nchild2,parpts=parpts)))
 }
 

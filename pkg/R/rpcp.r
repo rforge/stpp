@@ -1,4 +1,4 @@
-rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", maxrad, contagious=TRUE, edge = "larger.region", ...)
+rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", maxrad, infectious=TRUE, edge = "larger.region", ...)
 {
   #
   # Simulate a space-time Poisson cluster process in a region D x T.
@@ -49,7 +49,7 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
   #             to their parent, such that children lies in the 95% IC
   #             of the normal distribution.
   #
-  # contagious: If TRUE (default), corresponds to contagious diseases
+  # infectious: If TRUE (default), corresponds to infectious diseases
   #             (times of children are always greater than parent's time).
   #
   #       edge: specify the edge correction to use, "weight", "larger.region",
@@ -58,16 +58,10 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
   #        ...: additional parameters of the intensity of the parent process.
   #
   # Value:
-  #  pts: matrix (or list of matrix if nsim>1) containing the points (x,y,t)
+  #  xyt: matrix (or list of matrix if nsim>1) containing the points (x,y,t)
   #           of the simulated point process.
   #
-  ##
-  ## E. GABRIEL, 09/10/2006
-  ##
-  ## last modification: 
-  ##
 
-#  library(splancs)
 
   if (missing(cluster)) cluster <- "uniform"
   
@@ -98,14 +92,11 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
 
   while(ni<=nsim)
     {
-      if (edge=="weight")
-        pattern.interm <- pcp.weight(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=contagious, ...)
-
       if (edge=="larger.region")
-        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=contagious, ...)$pts
+        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=infectious, ...)$pts
 
       if (edge=="without")
-        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=contagious, maxradlarger=c(0,0), ...)$pts
+        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=infectious, maxradlarger=c(0,0), ...)$pts
 
       if (nsim==1)
         pattern <- pattern.interm

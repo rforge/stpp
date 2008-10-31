@@ -1,4 +1,4 @@
-animation <- function(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.35, plot.s.region=T, scales=T, border.frac=0.05, add=F)
+animation <- function(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.5, plot.s.region=T, scales=T, border.frac=0.05, add=F)
 { 
   #
   # Description:
@@ -38,7 +38,7 @@ animation <- function(xyt, s.region, t.region, runtime=1, incident="red", preval
   xy<-as.matrix(sxyt[,1:2])
   tt<-sxyt[,3]
   npts<-length(tt)
-  T0=length(unique(tt))
+  T0 <- max(t.region)
 
   if (add==F)
     {

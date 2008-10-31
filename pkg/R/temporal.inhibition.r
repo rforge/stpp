@@ -1,4 +1,4 @@
-temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,discrete.time=FALSE,replace=FALSE,inhibition=TRUE,...)
+temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,discrete.time=FALSE,replace=FALSE,inhibition=TRUE)
   {
   #
   # Simulate an inhibition or a contagious temporal point process in T
@@ -12,9 +12,9 @@ temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,di
   #
   #         h: a function of the distance between times and theta.
   #            If inhibition=TRUE, h is monotone, increasing, and must tend
-  #            to 1 when the distance tends to infinity. 0<= h(d,theta) <= 1.
+  #            to 1 when the distance tends to infinity. 0<= h(d,theta,delta) <= 1.
   #            Else, h is monotone, decreasing, and must tend
-  #            to 1 when the distance tends to 0. 0<= h(d,theta) <= 1.
+  #            to 1 when the distance tends to 0. 0<= h(d,theta,delta) <= 1.
   #  
   #         p: a function among "min", "max", "prod".  
   #  
@@ -29,131 +29,96 @@ temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,di
   ##
   ## E. GABRIEL, 26/03/2007
   ##
-  ## last modification: 21/10/2008
+  ## last modification: 31/10/2008
   ##
   ##
   
   if (missing(t.region)) t.region <- c(0,1)
 
-  if (inhibition==TRUE)
-    {
-      if ((max(t.region)-min(t.region))/delta<npoints)
-        stop(paste("t.region is too small to fit", npoints, "points", "at minimum time interval", delta))
-    }
-    
   if (!(is.function(h)))
-    {
-      models <- c("step","exponential","gaussian")
+	{
+      models <- c("step","gaussian")
       if (sum(h==models)==0)
-        {
-          message <- paste("this model is not implemented, please choose among: ",paste(models,"",sep=" ",collapse="and "))
-          stop(message)
-        }
+       	{
+          	message <- paste("this model is not implemented, please choose among: ",paste(models,"",sep=" ",collapse="and "))
+          	stop(message)
+        	}
       if (h=="step")
-        {
-          hk <- function(d,theta,delta)
-            {
-              res <- rep(1,length(d))
-              res[d<=delta] <- theta
-              return(res)
-            }
-        }
-      
-      if (h=="exponential")
-        {
-          hk <- function(d,theta,delta)
-            {
-              res <- exp(d*theta)/max(exp(d*theta))
-              return(res)
-            }
-        }
+      	{
+          	hk <- function(d,theta,delta)
+            	{
+              	res <- rep(1,length(d))
+		  	if (inhibition==TRUE) res[d<=delta] <- theta
+		  	else res[d>=delta] <- theta
+              	return(res)
+            	}
+        	}
       if (h=="gaussian")
-        {
-          hk <- function(d,theta,delta)
+      	{
+          	hk <- function(d,theta,delta)
+            	{
+              	if (inhibition==TRUE) 
+				{
+				res=NULL
+				for(i in 1:length(d))
+					{	
+					if (d[i]<=delta) res=c(res,0)
+					if (d[i]>(delta+theta/2)) res=c(res,1)
+					if (d[i]>delta & d[i]<=(delta+theta/2)) res=c(res,exp(-((d[i]-delta-theta/2)^2)/(2*(theta/8)^2)))
+					}
+				}
+		  	else
+				{
+				res=NULL
+				for(i in 1:length(d))
+					{	
+					if (d[i]<delta) res=c(res,1)
+					else res=c(res,exp(-((d[i]-delta)^2)/(2*(theta/8)^2)))
+					}
+				}
+	   	  	return(res)
+			}
+	  	}
+	}
+  else
+	{
+       hk <- function(d,theta,delta)
             {
-              res <- exp((d^2)*theta)/max(exp((d^2)*theta))
-              return(res)
-            }
-        }
-    }
-    
-    if (inhibition==FALSE)
-    {
-      if (!(is.function(h))) 
-        {
-          hh <- hk
-          hk <- function(d,theta,delta)
-            {
-            res <- hh(max(d)-d,theta,max(d)-delta)
+            res <- h(d,theta,delta)
             return(res)
-            }
-        }  
-      else 
-        {
-          hh <- h
-          hk <- function(d,theta,delta)
+		}
+    	}
+
+  pk <- function(d,h,recent,theta,delta)
+ 	{
+      if (recent=="all")
+		{
+		if (p=="min") res <- min(h(d=d,theta=theta,delta=delta))
+		if (p=="max") res <- max(h(d=d,theta=theta,delta=delta))
+		if (p=="prod") res <- prod(h(d=d,theta=theta,delta=delta))
+		}
+      else
             {
-            res <- h(max(d)-d,theta,max(d)-delta,...)
-            return(res)
-            }
-        }
-    }  
-  if (p=="min")
-    {
-      pk <- function(d,h,recent,theta,delta,...)
-        {
-          if (recent=="all")
-            res <- min(h(d=d,theta=theta,delta=delta,...))
-          else
-            {
-              if (is.numeric(recent))
-                {
+            if (is.numeric(recent))
+			{
                   if(recent<=length(d))
-                    res <- min(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta,...))
+				{
+				if (p=="min") res <- min(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta))
+				if (p=="max") res <- max(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta))
+				if (p=="prod") res <- prod(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta))
+				}
                   else
-                    res <- min(h(d=d,theta=theta,delta=delta,...))
-                }
-              else
-                stop("'recent' must be numeric")
+				{
+				if (p=="min") res <- min(h(d=d,theta=theta,delta=delta))
+				if (p=="max") res <- max(h(d=d,theta=theta,delta=delta))
+				if (p=="prod") res <- prod(h(d=d,theta=theta,delta=delta))
+				}
+                	}
+		 else stop("'recent' must be numeric")
             }
-          return(res)
-        }
-    }
-
-    if (p=="max")
-    {
-      pk <- function(d,h,recent,theta,delta,...)
-        {
-          if (recent=="all")
-            res <- max(h(d=d,theta=theta,delta=delta,...))
-          else
-            {
-              if (is.numeric(recent))
-                {
-                  if(recent<=length(d))
-                    res <- max(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta,...))
-                  else
-                    res <- max(h(d=d,theta=theta,delta=delta,...))
-                }
-              else
-                stop("'recent' must be numeric")
-            }
-          return(res)
-        }
-    }
-
-    if (p=="prod")
-    {
-      pk <- function(d,h,recent,theta,delta,...)
-        {
-          if (is.numeric(recent) && recent<=length(d))
-            res <- prod(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta,...))
-          else
-            res <- prod(h(d=d,theta=theta,delta=delta,...))
-          return(res)
-        }
-    }
-
+	return(res)
+	}
+ 
   if (discrete.time==FALSE)
     ti <- runif(1,min=t.region[1],max=t.region[1]+delta)
   else
@@ -174,15 +139,7 @@ temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,di
           if (all(abs(ti - times) > delta))
             umax <- 1
           else
-            {
-              if (is.function(h))
-                umax <- pk(d=abs(ti - times),h,recent,theta,delta,...)
-              else
-                {
-                  h <- hk
-                  umax <- pk(d=abs(ti - times),h,recent,theta,delta,...)
-                }
-            }
+            umax <- pk(d=abs(ti - times),hk,recent,theta,delta)
           if (prob<umax)
             {
               times <- c(times,ti)
@@ -207,15 +164,7 @@ temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,di
               if (abs(ti - times[npts]) < delta)
                 umax <- 1            
               else
-                {
-                  if (is.function(h))
-                    umax <- pk(d=abs(ti - times[npts]),h,recent,theta,delta,...)
-                  else
-                    {
-                      h <- hk
-                      umax <- pk(d=abs(ti - times[npts]),h,recent,theta,delta,...)
-                    }
-                }
+                umax <- pk(d=abs(ti - times),hk,recent,theta,delta)
               if (prob < umax)
                 {
                   times <- c(times,ti)

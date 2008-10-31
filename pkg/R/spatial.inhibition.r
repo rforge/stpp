@@ -13,9 +13,9 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
   #
   #         h: a function of the distance between points.
   #            If inhibition=TRUE, h is monotone, increasing, and must tend
-  #            to 1 when the distance tends to infinity. 0<= h(d,theta) <= 1.
+  #            to 1 when the distance tends to infinity. 0<= h(d,theta,delta) <= 1.
   #            Else, h is monotone, decreasing, and must tend
-  #            to 1 when the distance tends to 0. 0<= h(d,theta) <= 1.
+  #            to 1 when the distance tends to 0. 0<= h(d,theta,delta) <= 1.
   #  
   #         p: a function among "min", "max", "prod".  
   #  
@@ -32,15 +32,12 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
   ## last modification: 21/10/2008
   ##
   ##
-  
+
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
 
-  if ((inhibition==TRUE) && (npoints * pi * delta[1]^2/4 > areapl(s.region)))
-        stop(paste("s.region is too small to fit", npoints, "points", "at minimum distance", delta[1]))
-        
   if (!(is.function(h)))
     {
-      models <- c("step","exponential","gaussian")
+      models <- c("step","gaussian")
       if (sum(h==models)==0)
         {
           message <- paste("this model is not implemented, please choose among: ",paste(models,"",sep=" ",collapse="and "))
@@ -51,16 +48,8 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
           hk <- function(d,theta,delta)
             {
               res <- rep(1,length(d))
-              res[d<=delta] <- theta
-              return(res)
-            }
-        }
-      
-      if (h=="exponential")
-        {
-          hk <- function(d,theta,delta)
-            {
-              res <- exp(d*theta)/max(exp(d*theta))
+		  if (inhibition==TRUE) res[d<=delta] <- theta
+		  else res[d>=delta] <- theta
               return(res)
             }
         }
@@ -68,89 +57,68 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
         {
           hk <- function(d,theta,delta)
             {
-              res <- exp((d^2)*theta)/max(exp((d^2)*theta))
-              return(res)
-            }
-        }
-    }
- 
-  if (inhibition==FALSE)
-    {
-      if (!(is.function(h))) 
-        {
-          hh <- hk
+              if (inhibition==TRUE) 
+			{
+			res=NULL
+			for(i in 1:length(d))
+				{	
+				if (d[i]<=delta) res=c(res,0)
+				if (d[i]>(delta+theta/2)) res=c(res,1)
+				if (d[i]>delta & d[i]<=(delta+theta/2)) res=c(res,exp(-((d[i]-delta-theta/2)^2)/(2*(theta/8)^2)))
+				}
+			}
+		  else
+			{
+			res=NULL
+			for(i in 1:length(d))
+				{	
+				if (d[i]<delta) res=c(res,1)
+				else res=c(res,exp(-((d[i]-delta)^2)/(2*(theta/8)^2)))
+				}
+			}
+	   	  return(res)
+		}
+	  }
+	}
+ else
+   	{   
           hk <- function(d,theta,delta)
             {
-            res <- hh(max(d)-d,theta,max(d)-delta)
+            res <- h(d,theta,delta)
             return(res)
-            }
-        }  
-      else 
-        {
-          hh <- h
-          hk <- function(d,theta,delta)
-            {
-            res <- h(max(d)-d,theta,max(d)-delta,...)
-            return(res)
-            }
-        }
-    }
+		}
+	}
 
-  if (p=="min")
-    {
-      pk <- function(d,h,recent,theta,delta,...)
+	pk <- function(d,h,recent,theta,delta)
         {
           if (recent=="all")
-            res <- min(h(d=d,theta=theta,delta=delta,...))
+		{
+		 if (p=="min") res <- min(h(d=d,theta=theta,delta=delta))
+		 if (p=="max") res <- max(h(d=d,theta=theta,delta=delta))
+		 if (p=="prod") res <- prod(h(d=d,theta=theta,delta=delta))
+		}
           else
             {
               if (is.numeric(recent))
                 {
                   if(recent<=length(d))
-                    res <- min(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta,...))
+				{
+				if (p=="min") res <- min(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta))
+				if (p=="max") res <- max(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta))
+				if (p=="prod") res <- prod(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta))
+				}
                   else
-                    res <- min(h(d=d,theta=theta,delta=delta,...))
+				{
+				if (p=="min") res <- min(h(d=d,theta=theta,delta=delta))
+				if (p=="max") res <- max(h(d=d,theta=theta,delta=delta))
+				if (p=="prod") res <- prod(h(d=d,theta=theta,delta=delta))
+				}
                 }
               else
                 stop("'recent' must be numeric")
             }
           return(res)
         }
-    }
-
-    if (p=="max")
-    {
-      pk <- function(d,h,recent,theta,delta,...)
-        {
-          if (recent=="all")
-            res <- max(h(d=d,theta=theta,delta=delta,...))
-          else
-            {
-              if (is.numeric(recent))
-                {
-                  if(recent<=length(d))
-                    res <- max(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta,...))
-                  else
-                    res <- max(h(d=d,theta=theta,delta=delta,...))
-                }
-              else
-                stop("'recent' must be numeric")
-            }
-          return(res)
-        }
-    }
-
-    if (p=="prod")
-    {
-      pk <- function(d,h,recent,theta,delta,...)
-        {
-          if (is.numeric(recent) && recent<=length(d))
-            res <- prod(h(d=d[(length(d)-recent+1):length(d)],theta=theta,delta=delta,...))
-          else
-            res <- prod(h(d=d,theta=theta,delta=delta,...))
-          return(res)
-        }
-    }
 
   xy <- csr(n=1,poly=s.region)
   npts <- 1
@@ -160,20 +128,12 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
       while(npts < npoints)
         {
           prob <- runif(1)
-
           xy <- csr(n=1,poly=s.region)
           if (all((sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2)) > delta))
             umax <- 1
-          else
-            {
-              if (is.function(h))
-                umax <- pk(d=sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2),h,recent,theta,delta,...)
-              else
-                {
-                  h <- hk
-                  umax <- pk(d=sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2),h,recent,theta,delta,...)
-                }
-            }
+            else			
+             umax <- pk(d=sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2),hk,recent,theta,delta)             
+		
           if (prob<umax)
             {
               pattern.interm <- rbind(pattern.interm,c(xy[1],xy[2]))
@@ -186,23 +146,15 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
       while(npts < npoints)
         {
           prob <- runif(1)
-
           continue <- FALSE
           while(continue==FALSE)
             {
               xy <- csr(n=1,poly=s.region)
-              if (sqrt((xy[1] - pattern.interm[npts,1])^2 + (xy[2] - pattern.interm[npts,2])^2) < delta)
+              if (all(sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2) < delta))
                 umax <- 1            
-              else
-                {
-                  if (is.function(h))
-                    umax <- pk(d=sqrt((xy[1] - pattern.interm[npts,1])^2 + (xy[2] - pattern.interm[npts,2])^2),h,recent,theta,delta,...)
-                  else
-                    {
-                      h <- hk
-                      umax <- pk(d=sqrt((xy[1] - pattern.interm[npts,1])^2 + (xy[2] - pattern.interm[npts,2])^2),h,recent,theta,delta,...)
-                    }
-                }
+              else		
+                umax <- pk(d=sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2),hk,recent,theta,delta)             	
+                
               if (prob < umax)
                 {
                   pattern.interm <- rbind(pattern.interm,c(xy[1],xy[2]))
@@ -212,7 +164,6 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
             }
         }
     }
-
   invisible(return(list(pts=pattern.interm,s.region=s.region)))
 }
 

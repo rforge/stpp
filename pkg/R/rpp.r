@@ -1,4 +1,4 @@
-rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=T, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, mut=NULL, ...)
+rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, mut=NULL, ...)
 {
   #
   # Simulate a space-time Poisson process in a region D x T.
@@ -8,7 +8,11 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=T, dis
   # Arguments:
   #
   #        lambda: Spatio-temporal intensity of the Poisson process. 
-  #                Either a single positive number or a function(x,y,t,...)
+  #                If 'lambda' is a single positive number, the function 
+  #			 generates realisations of a homogeneous Poisson process, 
+  # 			 whilst if 'lambda' is a function of the form 
+  #			 lambda(x,y,t,...) or a character it generates 
+  #   		 realisations of an inhomogeneous Poisson process.
   #
   #      s.region: two columns matrix specifying polygonal region containing
   #                all data locations. If s.region is missing, the unit square
@@ -34,8 +38,13 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=T, dis
   #          lmax: upper bound for the value of lambda(x,y,t), if lambda
   #                is a function.
   #
+  #	      Lambda: matrix of spatial intensity if 'lambda' is a character.
+  #
+  # 		   mut: vector of temporal intensity if 'lambda' is a character.
+  #
+  #
   # Value:
-  #     pts: matrix (or list if nsim>1) containing the points (x,y,t)
+  #     xyt: matrix (or list if nsim>1) containing the points (x,y,t)
   #           of the simulated point process.
   #  Lambda: an array of the intensity surface at each time.
   #
@@ -43,13 +52,6 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=T, dis
   #     is:
   #     p(s,t)=lambda(s,t)/(max_{(s_i,t_i), i=1,...,ngrid} lambda(s_i,t_i)).
   #
-  ##
-  ## E. GABRIEL, 28/12/2005
-  ##
-  ## last modification: 06/10/2006
-  ##
-
-#  library(splancs)
 
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
