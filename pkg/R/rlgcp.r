@@ -1,4 +1,4 @@
-rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=TRUE)
+rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
 {
   #
   # Simulate a space-time log-Gaussian point process in a region D x T.
@@ -35,14 +35,6 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
   #     is:
   #     p(t)=lambda(s,t)/(max_{s_i, i=1,...,ngrid} lambda(s_i,t)).
   #
-  ##
-  ## E. GABRIEL, 24/01/2006
-  ##
-  ## last modification: 27/01/2006
-  ##                    02/02/2007  
-  ##                    13/02/2007
-  ##
-  ##
   
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
@@ -82,9 +74,7 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
 
   while(ni<=nsim)
     {
-#      now <- proc.time()[1]
       S <- gauss3D(nx=nx,ny=ny,nt=nt,xlim=range(s.region[,1]),ylim=range(s.region[,2]),tlim=range(t.region),separable=separable,model=model,param=param,scale=scale,var.grf=var.grf,mean.grf=mean.grf,exact=exact)
-#      speed <- proc.time()[1]-now;print(speed)
 
       Lambda <- exp(S)
 
@@ -103,11 +93,8 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
 
       if (is.null(lambdamax))
         lambdamax <- max(Lambda,na.rm=TRUE)
-#  summ <- summary(Lambda)
-#  lmax <- summ[[6]] + 0.05 * diff(range(Lambda,na.rm=TRUE))
   
       npts <- round(lambdamax/(s.area*t.area),0)
-##  npts <- npoints
       if (npts==0) stop("there is no data to thin")
   
       if ((replace==FALSE) && (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
@@ -123,7 +110,6 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
       samp <- sample(1:nt,npts,replace=replace,prob=mut/max(mut,na.rm=TRUE))
       times <- times.init[samp]
 
-#      now <- proc.time()[1]
       retain.eq.F <- FALSE
       while(retain.eq.F==FALSE)
         {
@@ -212,7 +198,6 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
               neffec <- length(x)
             }
         }
-#      speed <- proc.time()[1]-now;print(speed)
       
       times <- sort(times)
       index.times <- sort(samp)

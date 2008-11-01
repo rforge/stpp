@@ -30,87 +30,20 @@ in a region S x T.
   \eqn{\leq}{<=} 1. 
    Otherwise, \code{h} is monotone, decreasing, and must tend
   to 1 when the distance tends to 0.}
-  \item{gs, gt}{Must be choosen among "\code{min}", "\code{max}" and 
-   "\code{prod}". }
   \item{thetas, thetat}{Parameters of \code{hs} and \code{ht} functions.} 
   \item{deltas, deltat}{Spatial and temporal distance of inhibition.}
+  \item{gs, gt}{Compute the probability of acceptance of a new point from
+  \code{hs} or \code{ht} and \code{recent}. Must be choosen among "\code{min}",
+   "\code{max}" and "\code{prod}". }
   \item{recent}{If ``\code{all}'' consider all previous events. If
   is an integer, say N, consider only  the N most recent events.}
   \item{nsim}{number of simulations to generate. Default is 1. }
-  \item{discrete.time}{if TRUE, times are discrete, otherwise belong to R+.} 
+  \item{discrete.time}{if TRUE, times belong to \eqn{\mathbb{N}}{N},
+  otherwise belong to \eqn{\mathbb{R}^+}{R^+}.} 
   \item{replace}{Logical. If TRUE allows times repeat.}
   \item{inhibition}{Logical. If TRUE, an inhibition process is
   generated. Otherwise, it is a contagious process. }
 }
-
-
-#\subsubsection*{Details}
-#
-#Inhibition process ($k$th step):
-#\begin{enumerate}
-#\item Generate uniformly a location $s \in S$ and a time $t \in T$.
-#\item Generate $u_s \sim {\cal U}[0,1]$ and $u_t \sim {\cal U}[0,1]$.
-#\item  If $\| s -s_j \| \geq \delta_s$ for all $j=1,\dots,k-1$,
-#    then set $p_s = 1$.
-#
-#    Otherwise compute $v_s = p_s \left( h_s
-#      \left( (\| s -s_j \|)_{j=l,\dots,k-1}, \theta_s, \delta_s
-#      \right), r_k \right)$
-#  \item If $| t -t_j | \geq \delta_t$ for all $j=1,\dots,k-1$,
-#    then set $p_t = 1$.
-#
-#    Otherwise compute $v_t = p_t \left( h_t \left( (| t -t_j |)_{j=l,\dots,
-#          k-1}, \theta_t, \delta_t \right), r_k \right)$
-#  \item If $u_s < v_s$ and $u_t < v_t$, then keep $s$ and $t$.
-#\end{enumerate}
-#The functions $p_s$ and $p_t$ can be choosen among ``min'', ``max''
-#and ``prod'' and depend on the parameter $r_k$. This parameter allows us
-#to consider either all previous events or only the most recent in the
-#conditions 3 et 4.
-#The functions $h_s$ and $h_t$ depend on the distance between locations
-#and times respectively. They are monotone, increasing, tend
-#to 1 when the distance tends to infinity and satisfy $0 \leq h(\cdot) \leq 1$.
-#Currently the following functions are implemented:
-#\begin{itemize}
-#\item step: $h(x) = \lce
-#  \begin{array}[l]{ll}
-#    1,  \text{ if } x>\delta \\
-#    \theta,  \text{ otherwise}
-#  \end{array} \right., \ \theta \in [0,1]
-#  $
-#\item exponential: $h(x) = \exp(\theta x) / \max(\exp(\theta x)), \ \theta
-#  \geq 0$,
-#\item gaussian: $h(x) = \exp(\theta x^2) / \max(\exp(\theta x^2)), \ \theta
-#  \geq 0$.
-#\end{itemize}
-#Note that the user can call his own functions $h_s$ and $h_t$, provided 
-#that they have (spatial or temporal distance between points), 
-#\verb#theta# and \verb#delta# (even if not used by the function).
-#
-#{\bf *** should we also allow an user defined $p$ function?}
-#
-#\noindent
-#The simple sequential inhibition process is given using ``min'' for
-#$g$ functions, ``step'' for $h$ functions and 0 for $\theta$ parameter.
-#
-#Contagious process ($k$th step):
-#\begin{enumerate}
-#\item Generate uniformly a location $s \in S$ and a time $t \in T$.
-#\item Generate $u_s \sim {\cal U}[0,1]$ and $u_t \sim {\cal U}[0,1]$.
-#\item If $\| s_{k-1} -s \| < \delta_s$, then set $p_s = 1$.
-#  Otherwise, compute $p_s =h_s \left( \| s_{k-1} -s \|, \theta_s,
-#    \delta_s \right)$.
-#\item If $| t_{k-1} - t | < \delta_t$, then set $p_t=1$.
-#  Otherwise, compute $p_t = h_t \left( | t_{k-1} - t|, \theta_t,
-#    \delta_t \right)$.
-#\item If $u_s < p_s$ and $u_t < p_t$, then keep $s$ and $t$.
-#\end{enumerate}
-#The functions $h_s$ and $h_t$ depend on the distance between locations
-#and times respectively. They are monotone, decreasing, tend
-#to 1 when the distance tends to 0 and satisfy $0 \leq h(\cdot) \leq 1$.
-#$h_{cont.} (x,\theta,\delta)=h_{inhib.}(\max(x)-x,\theta,\max(x)-\delta)$.
-#The simple contagious process is given using ``step'' for $h$ functions
-#and 0 for $\theta$ parameters.
 
 value{
 A list containing:
@@ -159,18 +92,18 @@ ht = function(d,theta,delta,mut=0.3)
 	}
  return(res)
 }
+d=seq(0,1,length=100)
+plot(d,hs(d,theta=0.2,delta=0.1,mus=0.1),xlab="",ylab="",type="l",ylim=c(0,1),lwd=2,las=1)
+lines(d,ht(d,theta=0.1,delta=0.05,mut=0.3),col=2,lwd=2)
+legend("bottomright",col=1:2,lty=1,lwd=2,legend=c(expression(h[s]),expression(h[t])),bty="n",cex=2)
 
-x=seq(0,1,length=100)
-plot(x,hs(x,theta=0.2,delta=0.1,mus=0.1),xlab="",ylab="",type="l",ylim=c(0,1))
-lines(x,ht(x,theta=0.1,delta=0.05,mut=0.3),col=2)
 inh2 = rinter(npoints=100, hs=hs, gs="min", thetas=0.2, deltas=0.1, ht=ht, gt="min",	 thetat=0.1, deltat=0.05, inhibition=TRUE)
-animation(inh2$xyt,runtime=15,cex=0.8)
+animation(inh2$xyt, runtime=15, cex=0.8)
 
 # simple contagious process for given spatial and temporal regions
 data(northcumbria)
-cont1 = rinter(npoints=250, s.region=northcumbria, t.region=c(1,200), hs="gaussian",
- gs="min", thetas=1000, deltas=5000, ht="step", gt="min", thetat=0, deltat=10,
- recent=1, inhibition=FALSE)
+cont1 = rinter(npoints=250, s.region=northcumbria, t.region=c(1,200), thetas=0,
+ deltas=5000, thetat=0, deltat=10, recent=1, inhibition=FALSE)
 animation(cont1$xyt,  s.region=cont1$s.region, t.region=cont1$t.region,
  incident="darkgreen", prevalent="green3", runtime=15, cex=0.8)
 } 

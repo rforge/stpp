@@ -1,5 +1,8 @@
-rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad,delta,s.distr="exponential",t.distr="uniform",h="step",p="min",recent="all",lambda=NULL,lmax=NULL,nx=100,ny=100,nt=1000,t0,inhibition=FALSE,...)
-  {
+rinfec <- function(npoints, s.region, t.region, nsim=1, alpha, beta, gamma, 
+s.distr="exponential", t.distr="uniform", maxrad, delta, h="step", g="min", 
+recent=1, lambda=NULL, lmax=NULL, nx=100, ny=100, nt=1000, 
+t0, inhibition=FALSE, ...)
+{
   #
   # Simulate an infectious point process in a region D x T.
   #
@@ -38,7 +41,7 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
   #  h: infection rate function which depends on alpha, beta and delta.
   #     Must be choosen among "step" and "gaussian".
   #
-  #  p: Must be choosen among "min", "max" and "prod".
+  #  g: Must be choosen among "min", "max" and "prod".
   #
   #  recent:  If "all" consider all previous events. If is an integer, say N, 
   #           consider only the N most recent events. 
@@ -61,17 +64,10 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
   #
   #
   # Value:
-  #  pattern: list containing the points (x,y,t) of the simulated point
+  #  xyt: list containing the points (x,y,t) of the simulated point
   #           process.
   #
-  ##
-  ## E. GABRIEL, 02/04/2007
-  ##
-  ## last modification: 20/10/2008
-  ##
-  ##
 
-  if (is.null(npoints)) stop("please specify the number of points to generate")
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
   if (missing(t0)) t0 <- t.region[1]
@@ -84,18 +80,18 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
 
   if (s.distr=="poisson")
     {
+      if (is.matrix(lambda))
+        {
+          nx <- dim(lambda)[1]
+          ny <- dim(lambda)[2]
+          Lambda <- lambda
+        }
       s.grid <- make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
       if (is.function(lambda))
         {
           Lambda <- lambda(as.vector(s.grid$X),as.vector(s.grid$Y),...)
           Lambda <- matrix(Lambda,ncol=ny,byrow=T)
-        }
-      if (is.matrix(lambda))
-        {
-          nx <- dim(lambda)[1]
-          ny <- dim(lambda)[2]
-          Lambda <- lambda
         }
       if (is.null(lambda))
         {
@@ -132,7 +128,7 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
       ug <- top*dnorm(0,mean=alpha+gamma/2,sd=d)
     }
   
-  if (p=="min")
+  if (g=="min")
     {
       pk <- function(mu,recent)
         {
@@ -154,7 +150,7 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
         }
     }
   
-  if (p=="max")
+  if (g=="max")
     {
       pk <- function(mu,recent)
         {
@@ -175,7 +171,7 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
           return(res)
         }
     }
-    if (p=="prod")
+    if (g=="prod")
     {
       pk <- function(mu,recent)
         {
@@ -218,7 +214,7 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
               ht <- hk(t=t.grid$times,t0=ti[npts],alpha=alpha,beta=beta,gamma=gamma)
 #              ht <- ht/integrate(hk,lower=t.region[1],upper=t.region[2],subdivisions=nt,t0=t0,alpha=alpha,beta=beta,gamma=gamma)$value
               ht <- ht/(sum(ht)*t.grid$tinc)
-              
+           
               mu <- Mu+ht
               if (sum(mu)==0) 
                 mu2 <- mu
@@ -234,8 +230,11 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
 
               if (tk>=t.region[2])
                 {
+			N = npts
                   npts <- npoints
                   continue <- TRUE
+			M = paste("only",N,"points have been generated over",npoints,". Process stopped when getting a time t greater than max(t.region): try a larger t.region or check your parameters",sep=" ")
+			warning(M)
                 }
               else
                 {
@@ -243,18 +242,21 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
 
                  if ((mu[itk]==0) || ((h=="gaussian") && (mu[itk]<ug)))
                    {
-                     npts <- npoints
-                     continue <- TRUE
+			  N = npts
+                    npts <- npoints
+                    continue <- TRUE
+			  M = paste("only",N,"points have been generated over",npoints,"(process stopped when getting µ(t)=0",sep=" ")
+			  warning(M)
                    }
                  else
                    {
-                     uk <- runif(1)
                      Mu <- mu
                      if (inhibition==FALSE)
                        {
                          cont <- FALSE
                          while(cont==FALSE)
                            {
+	                       uk <- runif(1)
                              xpar <- pattern.interm[npts,1]
                              ypar <- pattern.interm[npts,2]
 
@@ -304,10 +306,11 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
                                    out <- FALSE
                                }
                              
-                             if (sqrt((xp - pattern.interm[npts,1])^2 + (yp - pattern.interm[npts,2])^2) < delta)
+                             if (all(sqrt((xp - pattern.interm[,1])^2 + (yp - pattern.interm[,2])^2) < delta))
                                umax <- 1
                              else
-                               umax <- mu2[itk]
+					umax <- pk(mu=mu2[ITK],recent=recent)
+#                               umax <- mu2[itk]
 
                              if (uk < umax)
                                {
@@ -321,6 +324,7 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
                        }
                      else
                        {
+				 uk <- runif(1)
                          xy <- csr(n=1,poly=s.region)
                          xp <- xy[1]
                          yp <- xy[2]
@@ -354,9 +358,6 @@ rinfec <- function(npoints=NULL,s.region,t.region,nsim=1,alpha,beta,gamma,maxrad
           ni <- ni+1
         }
     }
-  par(cex.lab=1.5,cex.axis=1.5)
-  plot(t.grid$times,Mu,type="s",ylim=c(0,max(Mu)),lwd=2,xlab="t",ylab=expression(mu(t)))
-  points(ti,Mu[ITK],pch=20,col=2,cex=1.5)
   invisible(return(list(xyt=pattern,s.region=s.region,t.region=t.region)))
 }
 
