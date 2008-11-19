@@ -62,25 +62,25 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
   if(missing(states)){
     ## default colouring scheme:
     states=list(
-      s1=list(col="blue",radius=1/80,alpha=0.5,lit=FALSE),
-      s2=list(col="red",radius=1/30,alpha=0.5,lit=FALSE),
+      past=list(col="blue",radius=1/80,alpha=0.5,lit=FALSE),
+      present=list(col="red",radius=1/30,alpha=0.5,lit=FALSE),
       ## still-to-come points are invisible (alpha=0)
-      s3=list(col="yellow",alpha=0.0,radius=1/80,lit=FALSE)
+      future=list(col="yellow",alpha=0.0,radius=1/80,lit=FALSE)
       )
     if(persist){
-      states$s1=states$s2
+      states$past=states$present
     }
   }
 
-  maxRadius = max(states$s1$radius,states$s2$radius,states$s3$radius)
+  maxRadius = max(states$past$radius,states$present$radius,states$future$radius)
   xr = range(xyt[,1],na.rm=TRUE)
   yr = range(xyt[,2],na.rm=TRUE)
   tr = range(xyt[,3],na.rm=TRUE)
   diag=sqrt(diff(xr)^2+diff(yr)^2+diff(tr)^2)
 
-  states$s1$radius=states$s1$radius*diag
-  states$s2$radius=states$s2$radius*diag
-  states$s3$radius=states$s3$radius*diag
+  states$past$radius=states$past$radius*diag
+  states$present$radius=states$present$radius*diag
+  states$future$radius=states$future$radius*diag
     
   .setPlot(xr[1],xr[2],yr[1],yr[2],tr[1],tr[2],maxRadius)
 
