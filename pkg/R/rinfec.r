@@ -245,7 +245,7 @@ t0, inhibition=FALSE, ...)
 			  N = npts
                     npts <- npoints
                     continue <- TRUE
-			  M = paste("only",N,"points have been generated over",npoints,"(process stopped when getting µ(t)=0",sep=" ")
+			  M = paste("only",N,"points have been generated over",npoints,"(process stopped when getting mu(t)=0",sep=" ")
 			  warning(M)
                    }
                  else
