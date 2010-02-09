@@ -1,4 +1,19 @@
 
+.listmerge = function (x, y, ...) 
+{
+### taken from RCurl
+    if (length(x) == 0) 
+        return(y)
+    if (length(y) == 0) 
+        return(x)
+    i = match(names(y), names(x))
+    i = is.na(i)
+    if (any(i)) 
+        x[names(y)[which(i)]] = y[which(i)]
+    x
+}
+
+
 .stan3d.redraw <- function(o) {
   ## switch off redraws
   par3d(skipRedraw=TRUE)
@@ -19,8 +34,16 @@
 
   ## now add them back in their correct state:
   for(i in (1:np)[changed]){
-    material3d(o$states[[tin[i]]])
-    o$xyt[i,4]=spheres3d(x=o$xyt[i,1],y=o$xyt[i,2],z=o$xyt[i,3],radius=o$states[[tin[i]]]$radius)
+
+### should be as simple as this:
+###    material3d(o$states[[tin[i]]])
+### but setting alpha is causing problems. Bug reported. Hence:
+    
+    sphereList = list(x=o$xyt[i,1],y=o$xyt[i,2],z=o$xyt[i,3],radius=o$states[[tin[i]]]$radius)
+    materialList = o$states[[tin[i]]]
+    pList = .listmerge(sphereList,materialList)
+    o$xyt[i,4]=do.call(spheres3d,pList)
+
     o$xyt[i,5]=tin[i]
   }
   ## start drawing again:
@@ -112,7 +135,7 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
   
   ## these points will get redrawn immediately... probably a better way to do this:
   for(i in 1:(dim(xyt)[1])){
-    xyt[i,4]=points3d(xyt[,1],xyt[,2],xyt[,3],alpha=0.0)
+    xyt[i,4]=points3d(xyt[i,1,drop=FALSE],xyt[i,2,drop=FALSE],xyt[i,3,drop=FALSE],alpha=0.0)
   }
   env = .rp.stan3d(xyt,tlim,twid,states)
   ret=list()
@@ -135,11 +158,11 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
   yr=c(ymax,ymin)+c(radius*(ymax-ymin),-radius*(ymax-ymin))*10
   
 
-  plot3d(xr,yr,c(tmin,tmax),type="n",col="red",box=FALSE,axes=TRUE,xlab="x",ylab="y",zlab="t")
-  axis3d('x-')
-  axis3d('y-')
+  plot3d(xr,yr,c(tmin,tmax),type="n",col="red",box=TRUE,axes=FALSE,xlab="x",ylab="y",zlab="t")
+  axis3d('x-',tick=FALSE)
+  axis3d('y-',tick=FALSE)
   axis3d('z-')
-  par3d(FOV=1)
+  par3d(FOV=0)
   AR=(xmax-xmin)/(ymax-ymin)
   aspect3d(AR,1,1)
   par3d(userMatrix = rotationMatrix(0, 1,0,0))
