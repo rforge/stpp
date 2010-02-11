@@ -66,7 +66,7 @@
                             )
   rp.slider(stan.panel, t, title = "time", from=tlim[1], to=tlim[2], action = .stan3d.redraw,showvalue=TRUE)
   rp.slider(stan.panel, width, title = "window", from=0, to=diff(tlim), action = .stan3d.redraw,showvalue=TRUE)
-  rp.button(stan.panel,action=function(p){par3d(userMatrix = rotationMatrix(0, 1,0,0));return(p)},title="align time axis")
+  rp.button(stan.panel,action=function(p){par3d(FOV=0,userMatrix = rotationMatrix(0, 1,0,0));return(p)},title="reset axes")
   rp.button(stan.panel,action=.store,title="quit",quitbutton=TRUE)
   rp.do(stan.panel, .stan3d.redraw)
   rp.block(stan.panel)
@@ -134,9 +134,22 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
 
   
   ## these points will get redrawn immediately... probably a better way to do this:
+  cat("Setting up...")
+  npts = dim(xyt)[1]
+  if(npts>=100){
+    tenths = as.integer(seq(1,npts,len=10))
+  }
+    
   for(i in 1:(dim(xyt)[1])){
+    if(npts>=100){
+      tn = (1:10)[tenths == i]
+      if(length(tn)>0){
+        cat(paste(11-tn,"...",sep=""))
+      }
+    }
     xyt[i,4]=points3d(xyt[i,1,drop=FALSE],xyt[i,2,drop=FALSE],xyt[i,3,drop=FALSE],alpha=0.0)
   }
+  cat("...done\n")
   env = .rp.stan3d(xyt,tlim,twid,states)
   ret=list()
   for(n in ls(env)){
@@ -154,11 +167,12 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
 .setPlot=function(xmin,xmax,ymin,ymax,tmin,tmax,radius=1/20){
   require(rgl)
   diag=sqrt((xmax-xmin)^2+(ymax-ymin)^2+(tmax-tmin)^2)
-  xr=c(xmax,xmin)+c(radius*(xmax-xmin),-radius*(xmax-xmin))*10
-  yr=c(ymax,ymin)+c(radius*(ymax-ymin),-radius*(ymax-ymin))*10
+  xr=c(xmax,xmin)+c(radius*(xmax-xmin),-radius*(xmax-xmin))*2
+  yr=c(ymax,ymin)+c(radius*(ymax-ymin),-radius*(ymax-ymin))*2
+  tr=c(tmax,tmin)+c(radius*(tmax-tmin),-radius*(tmax-tmin))*2
   
 
-  plot3d(xr,yr,c(tmin,tmax),type="n",col="red",box=TRUE,axes=FALSE,xlab="x",ylab="y",zlab="t")
+  plot3d(xr,yr,tr,type="n",col="red",box=TRUE,axes=FALSE,xlab="x",ylab="y",zlab="t")
   axis3d('x-',tick=FALSE)
   axis3d('y-',tick=FALSE)
   axis3d('z-')
