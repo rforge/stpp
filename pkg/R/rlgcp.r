@@ -205,13 +205,13 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
 
       if (nsim==1)
         {
-          pattern <- pattern.interm
+          pattern <- as.3dpoints(pattern.interm)
           index.t <- index.times
           Lambdafin <- Lambda
         }
       else
         {
-          pattern[[ni]] <- pattern.interm
+          pattern[[ni]] <- as.3dpoints(pattern.interm)
           index.t[[ni]] <- index.times
           Lambdafin[[ni]] <- Lambda
         }

@@ -1,4 +1,4 @@
-animation <- function(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.5, plot.s.region=T, scales=T, border.frac=0.05, add=F)
+animation <- function(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.5, plot.s.region=TRUE, scales=TRUE, border.frac=0.05, add=FALSE)
 { 
   #
   # Description:
@@ -40,14 +40,15 @@ animation <- function(xyt, s.region, t.region, runtime=1, incident="red", preval
   npts<-length(tt)
   T0 <- max(t.region)
 
-  if (add==F)
+  if (add==FALSE)
     {
-      if (scales==F)
+	par(pty="s",mfrow=c(1,1))
+      if (scales==FALSE)
         plot(xy[,1],xy[,2],type="n",xlim=xlim,ylim=ylim,xaxt="n",yaxt="n",bty="n",xlab=" ",ylab=" ")
-      if (scales==T)
+      if (scales==TRUE)
         plot(sxyt[,1],sxyt[,2],type="n",xlim=xlim,ylim=ylim,bty="n",xlab="X",ylab="Y")
-      if (plot.s.region==T)
-        polymap(as.points(s.region),add=T,lwd=2)
+      if (plot.s.region==TRUE)
+        polymap(as.points(s.region),add=TRUE,lwd=2)
     }
   nplotted<-0
   tt.now<-0

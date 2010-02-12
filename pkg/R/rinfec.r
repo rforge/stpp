@@ -349,12 +349,12 @@ t0, inhibition=FALSE, ...)
       dimnames(pattern.interm) <- list(NULL,c("x","y","t"))
       if (nsim==1)
         {
-          pattern <- pattern.interm
+          pattern <- as.3dpoints(pattern.interm)
           ni <-  ni+1
         }
       else
         {
-          pattern[[ni]] <- pattern.interm
+          pattern[[ni]] <- as.3dpoints(pattern.interm)
           ni <- ni+1
         }
     }

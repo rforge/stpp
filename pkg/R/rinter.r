@@ -57,12 +57,12 @@ rinter <- function(npoints,s.region,t.region,hs="step",gs="min",thetas=0,deltas,
       
       if (nsim==1)
         {
-          pattern <- cbind(pattern.interm,times.interm)
+          pattern <- as.3dpoints(cbind(pattern.interm,times.interm))
           ni <-  ni+1
         }
       else
         {
-          pattern[[ni]] <- cbind(pattern.interm,times.interm)
+          pattern[[ni]] <- as.3dpoints(cbind(pattern.interm,times.interm))
           ni <- ni+1
         }
     }

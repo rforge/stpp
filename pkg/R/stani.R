@@ -127,7 +127,7 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
     .setBG(bgimage,min(tr),col=bgcol)
   }
   
-  xyt=data.frame(xyt)
+  xyt=data.frame(xyt[,1:3])
   xyt$id=NA
   ## initially all points will need redrawing:
   xyt$state=-1

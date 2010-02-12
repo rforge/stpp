@@ -99,9 +99,9 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
         pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=infectious, maxradlarger=c(0,0), ...)$pts
 
       if (nsim==1)
-        pattern <- pattern.interm
+        pattern <- as.3dpoints(pattern.interm)
       else
-        pattern[[ni]] <- pattern.interm
+        pattern[[ni]] <- as.3dpoints(pattern.interm)
       
       ni <- ni+1
     }

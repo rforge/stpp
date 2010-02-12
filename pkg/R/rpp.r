@@ -82,12 +82,12 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           hpp <- rhpp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time)
           if (nsim==1)
             {
-              pattern <- hpp$pts
+              pattern <- as.3dpoints(hpp$pts)
               index.t <- hpp$index.t
             }
           else
             {
-              pattern[[ni]] <- hpp$pts
+              pattern[[ni]] <- as.3dpoints(hpp$pts)
               index.t[[ni]] <- hpp$index.t
             }
           ni <- ni+1
@@ -140,12 +140,12 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           
           if (nsim==1)
             {
-              pattern <- ipp$pts
+              pattern <- as.3dpoints(ipp$pts)
               index.t <- ipp$index.t
             }
           else
             {
-              pattern[[ni]] <- ipp$pts
+              pattern[[ni]] <- as.3dpoints(ipp$pts)
               index.t[[ni]] <- ipp$index.t
             }
           ni <- ni+1
@@ -160,12 +160,12 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           
           if (nsim==1)
             {
-              pattern <- ipp$pts
+              pattern <- as.3dpoints(ipp$pts)
               index.t <- ipp$index.t
             }
           else
             {
-              pattern[[ni]] <- ipp$pts
+              pattern[[ni]] <- as.3dpoints(ipp$pts)
               index.t[[ni]] <- ipp$index.t
             }
           ni <- ni+1
