@@ -19,7 +19,7 @@ plot(p, s.region=NULL, t.region=NULL)
  }
 
 \value{
-None
+None}
 
 \seealso{
  \code{\link{as.3dpoints}} for creating data in spatio-temporal point format.
