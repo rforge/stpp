@@ -45,7 +45,7 @@ in a region S x T.
   generated. Otherwise, it is a contagious process. }
 }
 
-value{
+\value{
 A list containing:
 \item{xyt}{matrix (or list of matrices if \code{nsim}>1)
 containing the points (x,y,t) of the simulated point pattern.
@@ -65,7 +65,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 \examples{
 # simple inhibition process
 inh1 = rinter(npoints=200,thetas=0,deltas=0.05,thetat=0,deltat=0.001,inhibition=TRUE)
-stani(inh1$xyt)
+\dontrun{stani(inh1$xyt)}
 
 # inhibition process using hs and ht defined by the user
 hs = function(d,theta,delta,mus=0.1)
@@ -100,12 +100,16 @@ lines(d,ht(d,theta=0.1,delta=0.05,mut=0.3),col=2,lwd=2)
 legend("bottomright",col=1:2,lty=1,lwd=2,legend=c(expression(h[s]),expression(h[t])),bty="n",cex=2)
 
 inh2 = rinter(npoints=100, hs=hs, gs="min", thetas=0.2, deltas=0.1, ht=ht, gt="min",	 thetat=0.1, deltat=0.05, inhibition=TRUE)
-animation(inh2$xyt, runtime=15, cex=0.8)
+\dontrun{animation(inh2$xyt, runtime=15, cex=0.8)}
 
 # simple contagious process for given spatial and temporal regions
 data(northcumbria)
 cont1 = rinter(npoints=250, s.region=northcumbria, t.region=c(1,200), thetas=0,
  deltas=5000, thetat=0, deltat=10, recent=1, inhibition=FALSE)
-animation(cont1$xyt,  s.region=cont1$s.region, t.region=cont1$t.region,
+
+\dontrun{animation(cont1$xyt,  s.region=cont1$s.region, t.region=cont1$t.region,
  incident="darkgreen", prevalent="green3", runtime=15, cex=0.8)
-} 
+}
+}
+
+

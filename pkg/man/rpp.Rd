@@ -64,21 +64,23 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr> and Peter J Diggle.
 # Homogeneous Poisson process
 # ---------------------------
 hpp1 <- rpp(lambda=200,replace=FALSE)
-stani(hpp1$xyt)
+
+\dontrun{stani(hpp1$xyt)}
 
 # fixed number of points, discrete time, with time repeat.
 data(northcumbria)
 hpp2 = rpp(npoints=500, s.region=northcumbria, t.region=c(1,1000), discrete.time=TRUE)
+\dontrun{
 polymap(northcumbria)
 animation(hpp2$xyt, s.region=hpp2$s.region, t.region=hpp2$t.region, runtime=10, add=TRUE)
-
+}
 # Inhomogeneous Poisson process
 # -----------------------------
 
 # intensity defined by a function
 lbda1 = function(x,y,t,a){a*exp(-4*y) * exp(-2*t)}
 ipp1 = rpp(lambda=lbda1, npoints=400, a=3200/((1-exp(-4))*(1-exp(-2))))
-stani(ipp1$xyt)
+\dontrun{stani(ipp1$xyt)}
 
 # intensity defined by a matrix
 data(fmd)
@@ -89,6 +91,8 @@ Ls = kernel2d(as.points(fmd[,1:2]), northcumbria, h, nx=100, ny=100)
 Lt = dim(fmd)[1]*density(fmd[,3], n=200)$y
 ipp2 = rpp(lambda="m", Lambda=Ls$z, mut=Lt, s.region=northcumbria, 
 t.region=c(1,200), discrete.time=TRUE)
+\dontrun{
 image(Ls$x, Ls$y, Ls$z, col=grey((1000:1)/1000)); polygon(northcumbria)
 animation(ipp2$xyt, add=TRUE, cex=0.7, runtime=15)
+}
 }

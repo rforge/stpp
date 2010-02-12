@@ -142,14 +142,21 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 # non separable covariance function: 
 lgcp1 <- rlgcp(npoints=200, nx=50, ny=50, nt=50, separable=FALSE, model="gneiting",
  param=c(1,1,1,1,1,2), var.grf=1, mean.grf=0)
-N <- lgcp1$Lambda[,,1];for(j in 2:(dim(lgcp1$Lambda)[3])){N <- N+lgcp1$Lambda[,,j]}
+N <- lgcp1$Lambda[,,1];for(j in 2:(dim(lgcp1$Lambda)[3])){N <-
+N+lgcp1$Lambda[,,j]}
+\dontrun{
 image(N,col=grey((1000:1)/1000));box()
 animation(lgcp1$xyt, cex=0.8, runtime=10, add=TRUE, prevalent="orange")
-
+}
 # separable covariance function: 
 lgcp2 <- rlgcp(npoints=200, nx=50, ny=50, nt=50, separable=TRUE, model="exponential",
  param=c(1,1,1,1,1,2), var.grf=2, mean.grf=-0.5*2)
-N <- lgcp2$Lambda[,,1];for(j in 2:(dim(lgcp2$Lambda)[3])){N <- N+lgcp2$Lambda[,,j]}
+N <- lgcp2$Lambda[,,1];for(j in 2:(dim(lgcp2$Lambda)[3])){N <-
+N+lgcp2$Lambda[,,j]}
+\dontrun{
 image(N,col=grey((1000:1)/1000));box()
-animation(lgcp2$xyt, cex=0.8, pch=20, runtime=10, add=TRUE, prevalent="orange")
+animation(lgcp2$xyt, cex=0.8, pch=20, runtime=10, add=TRUE,
+prevalent="orange")
+}
+
 }
