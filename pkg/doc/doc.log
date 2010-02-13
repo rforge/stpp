@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.8-alpha-20080323 (MiKTeX 2.7) (preloaded format=latex 2008.7.6)  12 FEB 2010 15:57
+This is pdfTeX, Version 3.1415926-1.40.8-alpha-20080323 (MiKTeX 2.7) (preloaded format=latex 2008.7.6)  13 FEB 2010 15:17
 entering extended mode
 **doc.tex
 (doc.tex
@@ -253,6 +253,6 @@ Here is how much of TeX's memory you used:
  4899 multiletter control sequences out of 110000
  12597 words of font info for 47 fonts, out of 1200000 for 2000
  14 hyphenation exceptions out of 8191
- 27i,12n,43p,309b,299s stack positions out of 5000i,500n,10000p,200000b,5000s
+ 27i,12n,43p,228b,299s stack positions out of 5000i,500n,10000p,200000b,5000s
 
 Output written on doc.dvi (18 pages, 74200 bytes).
