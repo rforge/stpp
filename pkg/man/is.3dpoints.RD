@@ -6,11 +6,11 @@
 Tests for data in spatio-temporal point format.}
 
 \usage{
-is.3dpoints(p)
+is.3dpoints(x)
 }
 
 \arguments{
-  \item{p}{any object.}
+  \item{x}{any object.}
  }
 
 \value{

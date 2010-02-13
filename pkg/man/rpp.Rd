@@ -29,8 +29,8 @@ rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
   number of points is from a 
    Poisson distribution with mean the double integral of \code{lambda} over 
    \code{s.region} and \code{t.region}.} 
-  \item{discrete.time}{if TRUE, times belong to \eqn{\mathbb{N}}{N},
-  otherwise belong to \eqn{\mathbb{R}^+}{R^+}.} 
+  \item{discrete.time}{if TRUE, times belong to \eqn{{\bf N}}{N},
+  otherwise belong to \eqn{{\bf R}^+}{R^+}.} 
   \item{nsim}{number of simulations to generate. Default is 1.}
   \item{nx,ny,nt}{define the size of the 3-D grid on which the intensity
   is evaluated. }

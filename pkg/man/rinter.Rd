@@ -8,9 +8,9 @@ in a region S x T.
 }
 
 \usage{
- rinter(npoints, s.region, t.region, hs="step", gs="min", thetas=0, deltas,
-        ht="step", gt="min", thetat=1, deltat, recent="all", nsim=1,
-        discrete.time=FALSE, replace=FALSE, inhibition=TRUE)
+ rinter(npoints,s.region,t.region,hs="step",gs="min",thetas=0,deltas,
+ ht="step",gt="min",thetat=1,deltat,recent="all",nsim=1,discrete.time=FALSE,
+ replace=FALSE,inhibition=TRUE,...)
 }
 
 \arguments{
@@ -38,11 +38,12 @@ in a region S x T.
   \item{recent}{If ``\code{all}'' consider all previous events. If
   is an integer, say N, consider only  the N most recent events.}
   \item{nsim}{number of simulations to generate. Default is 1. }
-  \item{discrete.time}{if TRUE, times belong to \eqn{\mathbb{N}}{N},
-  otherwise belong to \eqn{\mathbb{R}^+}{R^+}.} 
+  \item{discrete.time}{if TRUE, times belong to \eqn{{\bf N}}{N},
+  otherwise belong to \eqn{{\bf R}^+}{R^+}.} 
   \item{replace}{Logical. If TRUE allows times repeat.}
   \item{inhibition}{Logical. If TRUE, an inhibition process is
   generated. Otherwise, it is a contagious process. }
+  \item{...}{Additional parameters if \code{hs} and \code{ht} are defined by the user.}
 }
 
 \value{

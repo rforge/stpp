@@ -1,9 +1,9 @@
-is.3dpoints <- function (p) 
+is.3dpoints <- function (x) 
 {
     is <- FALSE
-    	if (is.array(p)) 
-      	  if (length(dim(p)) == 2) 
-            	if (dim(p)[2] >= 3) 
+    	if (is.array(x)) 
+      	  if (length(dim(x)) == 2) 
+            	if (dim(x)[2] >= 3) 
                 	is <- TRUE
     is
 }

@@ -8,9 +8,10 @@ in a region S x T.
 }
 
 \usage{
-rinfec(npoints, s.region, t.region, nsim=1, alpha, beta, gamma, h="step",
- s.distr="exponential", t.distr="uniform", maxrad, delta, g="min", recent=1,
- lambda=NULL, lmax=NULL, nx=100, ny=100, nt=1000, t0, inhibition=FALSE, ...)
+rinfec(npoints, s.region, t.region, nsim=1, alpha, beta, gamma, 
+s.distr="exponential", t.distr="uniform", maxrad, delta, h="step", g="min", 
+recent=1, lambda=NULL, lmax=NULL, nx=100, ny=100, nt=1000, 
+t0, inhibition=FALSE, ...)
 }
 
 \arguments{

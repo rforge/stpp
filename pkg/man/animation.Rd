@@ -6,7 +6,7 @@
 Provide an animation of spatio-temporal point patterns.}
 
 \usage{
-animation(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.25, plot.s.region=T, scales=T, border.frac=0.05, add=F)
+animation(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.5, plot.s.region=TRUE, scales=TRUE, border.frac=0.05, add=FALSE)
 }
 
 \arguments{

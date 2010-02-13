@@ -5,11 +5,11 @@ if (inherits(x,"stpp")==TRUE)
 	{ 
 	  par(mfrow=c(1,2),pty="s")
 	  if (is.null(s.region))	
-	  plot(x[,1:2],pch=20,main="xy-locations")
+	  plot(x[,1:2],main="xy-locations",...)
 	  else
 		{
 		  polymap(s.region,xlab="x",ylab="y")
-		  points(x[,1:2],pch=20)
+		  points(x[,1:2],...)
 		  title("xy-locations")	 
 		}
 	  plot(x[,3],cumsum(x[,3]),type="l",xlab="t",ylab="",main="cumulative number",las=1,xlim=t.region)

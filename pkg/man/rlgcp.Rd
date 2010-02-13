@@ -8,9 +8,9 @@ in a region S x T.
 }
 
 \usage{
- rlgcp(s.region, t.region, npoints=NULL, nsim=1, separable=TRUE, model="exponential",
-       param=c(1,1,1,1,1,2), var.grf=1, mean.grf=0, replace=TRUE, nx=100, ny=100,
-       nt=100, lmax=NULL, discrete.time=FALSE, exact=FALSE)
+ rlgcp(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, 
+ ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),
+ scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
 }
 
 \arguments{
@@ -35,14 +35,16 @@ in a region S x T.
   "gneiting" or "cesare" (see Details).} 
   \item{param}{vector of parameters of the covariance function (see
   Details).} 
+  \item{scale}{vector of length 2 defining the spatial and temporal scale.}
   \item{var.grf}{variance of the Gaussian random field.}
   \item{mean.grf}{mean of the Gaussian random field.}
   \item{replace}{logical allowing times repeat.} 
   \item{nx,ny,nt}{define the size of the 3-D grid on which the intensity
   is evaluated.} 
   \item{lmax}{upper bound for the value of lambda(x,y,t).} 
-  \item{discrete.time}{if TRUE, times belong to \eqn{\mathbb{N}}{N},
-  otherwise belong to \eqn{\mathbb{R}^+}{R^+}.} 
+  \item{discrete.time}{if TRUE, times belong to \eqn{{\bf N}}{N},
+  otherwise belong to \eqn{{\bf R}^+}{R^+}.} 
+  \item{exact}{logical allowing exact simulation of Gaussian random fields (see manual for details).}
 }
 
 \details{
@@ -62,7 +64,7 @@ The purely spatial and purely temporal covariance functions can be:
 \eqn{\alpha >0}{\alpha > 0},
 \item Wave: \eqn{c(r) = \frac{\sin(r)}{r}}{c(r)=sin(r)/r} if \eqn{r>0}{r>0}, 
  \eqn{c(0)=1}{c(0)=1},
-\item Matèrn: \eqn{c(r) = \frac{(r/\beta)^\alpha}{2^{\alpha-1}\Gamma(\alpha)}
+\item Matern: \eqn{c(r) = \frac{(r/\beta)^\alpha}{2^{\alpha-1}\Gamma(\alpha)}
   {\cal K}_{\alpha}(r/\beta)}{c(r)={(r/\beta)^\alpha}/{2^(\alpha-1) \Gamma(\alpha)}
   K_\alpha(r/\beta)}, \eqn{\alpha > 0}{\alpha>0} and \eqn{\beta > 0}{\beta>0}.
 
@@ -89,7 +91,7 @@ The spatio-temporal covariance function can be:
       \itemize{
   \item If \eqn{\alpha_2=1}{\alpha_2=1}, \eqn{\phi(r)}{\phi(r)} is the Stable model.
   \item if \eqn{\alpha_2=2}{\alpha_2=2}, \eqn{\phi(r)}{\phi(r)} is the Cauchy model.
-  \item If \eqn{\alpha_2=3}{\alpha_2=3}, \eqn{\phi(r)}{\phi(r)} is the Matèrn model.
+  \item If \eqn{\alpha_2=3}{\alpha_2=3}, \eqn{\phi(r)}{\phi(r)} is the Matern model.
   \item If \eqn{\alpha_5=1}{\alpha_5=1}, \eqn{\psi^2(r) = (r^{\alpha_3}+
   1)^{\alpha_4}}{\psi^2(r) = (r^\alpha_3+1)^\alpha_4},
   \item If \eqn{\alpha_5=2}{\alpha_5=2}, \eqn{\psi^2(r) = (\alpha_4^{-1} r^{\alpha_3}
