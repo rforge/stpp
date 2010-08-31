@@ -1,18 +1,21 @@
-pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", maxrad, infecD=TRUE, maxradlarger, ...)
+itexp <- function(u, m, t) { -log(1-u*(1-exp(-t*m)))/m }
+rtexp <- function(n, m, t) { itexp(runif(n), m, t) }
+
+pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", dispersion, infecD=TRUE, larger.region, tronc=1, ...)
 {
   if (missing(cluster)) cluster <- "uniform"
   
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
 
-  if (missing(maxrad)) maxrad <- c(0.05,0.05)
-  if (length(maxrad)==1) maxrad=rep(maxrad,2)
-  maxrads <- maxrad[1]
-  maxradt <- maxrad[2]
+  if (missing(dispersion)) dispersion <- c(0.05,0.05)
+  if (length(dispersion)==1) dispersion=rep(dispersion,2)
+  dispersions <- dispersion[1]
+  dispersiont <- dispersion[2]
 
-  if (missing(maxradlarger)) maxradlarger <- maxrad
-  maxradlargers <- maxradlarger[1]
-  maxradlargert <- maxradlarger[2]
+  if (missing(larger.region)) larger.region <- dispersion
+  larger.regions <- larger.region[1]
+  larger.regiont <- larger.region[2]
   
   if (length(cluster)==1)
     {
@@ -29,15 +32,15 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
   s.area <- areapl(s.region)
   t.area <- t.region[2]-t.region[1]
 
-  if (maxradlargers==0)
+  if (larger.regions==0)
     s.larger <- s.region
   else
     {
-      s.larger <- rbind(s.region+maxradlargers,s.region-maxradlargers,cbind(s.region[,1]+maxradlargers,s.region[,2]-maxradlargers),cbind(s.region[,1]-maxradlargers,s.region[,2]+maxradlargers))
+      s.larger <- rbind(s.region+larger.regions,s.region-larger.regions,cbind(s.region[,1]+larger.regions,s.region[,2]-larger.regions),cbind(s.region[,1]-larger.regions,s.region[,2]+larger.regions))
       M <- chull(s.larger)
       s.larger <- cbind(s.larger[M,1],s.larger[M,2])
     }
-  t.larger <- c(t.region[1]-maxradlargert,t.region[2]+maxradlargert)
+  t.larger <- c(t.region[1]-larger.regiont,t.region[2]+larger.regiont)
 
   if (t.larger[1]<0) t.larger[1] <- 0
 
@@ -89,42 +92,49 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
       
       if (s.distr=="uniform")
         {
-          xp <- xpar+runif(nc,min=-maxrads,max=maxrads)
-          yp <- ypar+runif(nc,min=-maxrads,max=maxrads)
+          xp <- xpar+runif(nc,min=-dispersions,max=dispersions)
+          yp <- ypar+runif(nc,min=-dispersions,max=dispersions)
         }
       if (s.distr=="normal")
         {
-          xp <- xpar+rnorm(nc,mean=0,sd=maxrads/2)
-          yp <- ypar+rnorm(nc,mean=0,sd=maxrads/2)
+          xp <- xpar+rnorm(nc,mean=0,sd=dispersions/2)
+          yp <- ypar+rnorm(nc,mean=0,sd=dispersions/2)
         }
       if (s.distr=="exponential")
         {
-          xp <- xpar+rexp(nc,rate=1/maxrads)
-          yp <- ypar+rexp(nc,rate=1/maxrads)
+          xp <- xpar+rexp(nc,rate=1/dispersions)
+          yp <- ypar+rexp(nc,rate=1/dispersions)
         }
       if (t.distr=="uniform")
         {
           if (infecD==TRUE) 
-            zp <- zpar+runif(nc,min=-maxradt,max=maxradt)
+            zp <- zpar+runif(nc,min=-dispersiont,max=dispersiont)
           else
-            zp <- zpar+runif(nc,min=0,max=maxradt)
+            zp <- zpar+runif(nc,min=0,max=dispersiont)
         }
       if (t.distr=="normal")
         {
           if (infecD==TRUE) 
-            zp <- zpar+abs(rnorm(nc,mean=0,sd=maxradt/2))
+            zp <- zpar+abs(rnorm(nc,mean=0,sd=dispersiont/2))
           else
-            zp <- zpar+rnorm(nc,mean=0,sd=maxradt/2)
+            zp <- zpar+rnorm(nc,mean=0,sd=dispersiont/2)
         }
       if (t.distr=="exponential")
         {
           if (infecD==TRUE) 
-            zp <- zpar+rexp(nc,rate=1/maxradt)
+            zp <- zpar+rexp(nc,rate=1/dispersiont)
           else
-            zp <- zpar+sample(c(-1,1),1)*rexp(nc,rate=1/maxradt)
+            zp <- zpar+sample(c(-1,1),1)*rexp(nc,rate=1/dispersiont)
+        }
+      if (t.distr=="trunc.exponential")
+        {
+          if (infecD==TRUE) 
+            zp <- zpar+rtexp(nc,m=1/dispersiont,t=tronc)
+          else
+            zp <- zpar+sample(c(-1,1),1)*rtexp(nc,m=1/dispersiont,t=tronc)
         }
 
-      mask <- ((inout(as.points(x=xp,y=yp),poly=s.region)==T) & (zp > t.region[1] & zp < t.region[2]) & (sqrt( (((xpar-xp)^2)/maxrads^2) + (((ypar-yp)^2)/maxrads^2)) < 1))
+      mask <- ((inout(as.points(x=xp,y=yp),poly=s.region)==T) & (zp > t.region[1] & zp < t.region[2]) & (sqrt( (((xpar-xp)^2)/dispersions^2) + (((ypar-yp)^2)/dispersions^2)) < 1))
       nchild2[ipar] <- sum(mask)
       pattern.interm <- rbind(pattern.interm,cbind(xp[mask],yp[mask],zp[mask],rep(ipar,sum(mask))))
     }
@@ -145,42 +155,49 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
       
       if (s.distr=="uniform")
         {
-          xp <- xpar+runif(1,min=-maxrads,max=maxrads)
-          yp <- ypar+runif(1,min=-maxrads,max=maxrads)
+          xp <- xpar+runif(1,min=-dispersions,max=dispersions)
+          yp <- ypar+runif(1,min=-dispersions,max=dispersions)
         }
       if (s.distr=="normal")
         {
-          xp <- xpar+rnorm(1,mean=0,sd=maxrads/2)
-          yp <- ypar+rnorm(1,mean=0,sd=maxrads/2)
+          xp <- xpar+rnorm(1,mean=0,sd=dispersions/2)
+          yp <- ypar+rnorm(1,mean=0,sd=dispersions/2)
         }
       if (s.distr=="exponential")
         {
-          xp <- xpar+rexp(1,rate=1/maxrads)
-          yp <- ypar+rexp(1,rate=1/maxrads)
+          xp <- xpar+rexp(1,rate=1/dispersions)
+          yp <- ypar+rexp(1,rate=1/dispersions)
         }
       if (t.distr=="uniform")
         {
           if (infecD==TRUE) 
-            zp <- zpar+runif(1,min=-maxradt,max=maxradt)
+            zp <- zpar+runif(1,min=-dispersiont,max=dispersiont)
           else
-            zp <- zpar+runif(1,min=0,max=maxradt)
+            zp <- zpar+runif(1,min=0,max=dispersiont)
         }
       if (t.distr=="normal")
         {
           if (infecD==TRUE) 
-            zp <- zpar+abs(rnorm(1,mean=0,sd=maxradt/2))
+            zp <- zpar+abs(rnorm(1,mean=0,sd=dispersiont/2))
           else
-            zp <- zpar+rnorm(1,mean=0,sd=maxradt/2)
+            zp <- zpar+rnorm(1,mean=0,sd=dispersiont/2)
         }
       if (t.distr=="exponential")
         {
           if (infecD==TRUE) 
-            zp <- zpar+rexp(1,rate=1/maxradt)
+            zp <- zpar+rexp(1,rate=1/dispersiont)
           else
-            zp <- zpar+sample(c(-1,1),1)*rexp(1,rate=1/maxradt)
+            zp <- zpar+sample(c(-1,1),1)*rexp(1,rate=1/dispersiont)
+        }
+      if (t.distr=="trunc.exponential")
+        {
+          if (infecD==TRUE) 
+            zp <- zpar+rtexp(1,m=1/dispersiont,t=tronc)
+          else
+            zp <- zpar+sample(c(-1,1),1)*rtexp(1,m=1/dispersiont,t=tronc)
         }
       
-      if ((inout(as.points(x=xp,y=yp),poly=s.region)==T) & (zp > t.region[1] & zp < t.region[2]) & (sqrt( (((xpar-xp)^2)/maxrads^2) + (((ypar-yp)^2)/maxrads^2)) < 1))
+      if ((inout(as.points(x=xp,y=yp),poly=s.region)==T) & (zp > t.region[1] & zp < t.region[2]) & (sqrt( (((xpar-xp)^2)/dispersions^2) + (((ypar-yp)^2)/dispersions^2)) < 1))
         {
           pattern.interm <- rbind(pattern.interm,cbind(xp,yp,zp,ipar))
           ipt <- ipt+1
@@ -196,7 +213,7 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
 
 
 
-rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", maxrad, infectious=TRUE, edge = "larger.region", ...)
+rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", dispersion, infectious=TRUE, edge = "larger.region", larger.region=larger.region, tronc=1,...)
 {
   #
   # Simulate a space-time Poisson cluster process in a region D x T.
@@ -237,12 +254,12 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
   #             first the spatial distribution of children and then
   #             the temporal distribution.
   #
-  #     maxrad: vector of length 2 giving the maximum spatial and temporal
+  #     dispersion: vector of length 2 giving the maximum spatial and temporal
   #             variation of the offspring.
-  #             maxrads = maximum distance between parent and child (radius of
+  #             dispersions = maximum distance between parent and child (radius of
   #             a circle centred at the parent).
-  #             maxradt = maximum time separiting parent and child.
-  #             For a normal distribution of children, maxrad corresponds to 
+  #             dispersiont = maximum time separiting parent and child.
+  #             For a normal distribution of children, dispersion corresponds to 
   #             the 2 * standard deviation of location of children relative
   #             to their parent, such that children lies in the 95% IC
   #             of the normal distribution.
@@ -266,9 +283,9 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
 
-  if (missing(maxrad)) maxrad <- c(0.05,0.05)
-  maxrads <- maxrad[1]
-  maxradt <- maxrad[2]
+  if (missing(dispersion)) dispersion <- c(0.05,0.05)
+  dispersions <- dispersion[1]
+  dispersiont <- dispersion[2]
 
   if (length(cluster)==1)
     {
@@ -291,10 +308,10 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
   while(ni<=nsim)
     {
       if (edge=="larger.region")
-        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=infectious, ...)$pts
+        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, dispersion=dispersion, infecD=infectious, larger.region=larger.region,tronc=tronc, ...)$pts
 
       if (edge=="without")
-        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, maxrad=maxrad, infecD=infectious, maxradlarger=c(0,0), ...)$pts
+        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, dispersion=dispersion, infecD=infectious, larger.region=c(0,0), tronc=tronc, ...)$pts
 
       if (nsim==1)
         pattern <- as.3dpoints(pattern.interm)

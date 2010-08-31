@@ -65,7 +65,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 }
 
 \seealso{
- \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
+ \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
  }
  
 \examples{

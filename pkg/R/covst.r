@@ -36,23 +36,29 @@ set.cov <- function(separable,model,param,sigma2)
             if (model=="stable")
               {
                 mods <- 2
-                if ((param[1] >2) || (param[1]<0)) stop("parameter of stable model must lie in [0,2]")
+                if ((param[1] >2) || (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
                 modt <- 2
-                if ((param[2] >2) || (param[2]<0)) stop("parameter of stable model must lie in [0,2]")
+                if ((param[2] >2) || (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
               }
             if (model=="cauchy")
               {
                 mods <- 3
-                if (param[1]<=0) stop("parameter of cauchy model must be strictly greater than 0")
+                if (param[1]<=0) stop("Cauchy model parameter must be strictly positive")
                 modt <- 3
-                if (param[2]<=0) stop("parameter of cauchy model must be strictly greater than 0")
+                if (param[2]<=0) stop("Cauchy model parameter must be strictly positive")
               }
             if (model=="wave")
               {
                 mods <- 4
                 modt <- 4
                 }
-            if (model=="matern") stop("You must specify another model for the temporal covariance")
+            if (model=="matern") 
+			{
+                  mods <- 7
+			if (param[2]<=0 | param[1]<=0) stop("Matérn model parameters must be strictly positive")
+                  modt <- 7
+			if (param[3]<=0 | param[4]<=0) stop("Matérn model parameters must be strictly positive")
+                  }
           }
             if (length(model)==2)
               {
@@ -67,29 +73,37 @@ set.cov <- function(separable,model,param,sigma2)
                 if (model[1]=="stable")
                     {
                       mods <- 2
-                      if ((param[1] >2) || (param[1]<0)) stop("parameter of stable model must lie in [0,2]")
+                      if ((param[1] >2) || (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
                     }
                 if (model[2]=="stable")
                   {
                     modt <- 2
-                    if ((param[2] >2) || (param[2]<0)) stop("parameter of stable model must lie in [0,2]")
+                    if ((param[2] >2) || (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
                   }
                 if (model[1]=="cauchy")
                   {
                     mods <- 3
-                    if (param[1]<=0) stop("parameter of cauchy model must be strictly greater than 0")
+                    if (param[1]<=0) stop("Cauchy model parmaeter must be strictly positive")
                   }
                 if (model[2]=="cauchy")
                   {
                     modt <- 3
-                    if (param[2]<=0) stop("parameter of cauchy model must be strictly greater than 0")
+                    if (param[2]<=0) stop("Cauchy model parameter must be strictly positive")
                   }
                 if (model[1]=="wave")
                     mods <- 4
                 if (model[2]=="wave")
                   modt <- 4
                 if (model[1]=="matern")
+			{
                   mods <- 7
+			if (param[2]<=0 | param[1]<=0) stop("Matérn model parameters must be strictly positive")
+                  }
+		    if (model[2]=="matern")
+			{
+                  modt <- 7
+			if (param[3]<=0 | param[4]<=0) stop("Matérn model parameters must be strictly positive")
+                  }
               }
       }
     if (!(isTRUE(separable)))
@@ -118,6 +132,18 @@ set.cov <- function(separable,model,param,sigma2)
     return(model=c(mods,modt,mod))
   }
 
+matern = function (d, scale = 1, alpha = 1, nu = 0.5) 
+{
+    if (any(d < 0)) 
+        stop("distance argument must be nonnegative")
+    d <- d * alpha
+    d[d == 0] <- 1e-10
+    k <- 1/((2^(nu - 1)) * gamma(nu))
+    res <- scale * k * (d^nu) * besselK(d, nu)
+    return(res)
+}
+
+
 covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,2),sigma2=1,scale=c(1,1),plot=TRUE,nlevels=10)
 {
 
@@ -141,6 +167,12 @@ covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,2),sigma2=1,
                  as.double(param),
                  as.double(sigma2),
                  as.double(scale))[[1]]
+ if (model[1]==7) mods=matern(dist,scale=scale[1],alpha=param[2],nu=param[1])
+ if (model[2]==7) modt=matern(times,scale=scale[2],alpha=param[4],nu=param[3])
+ if (model[1]==7 & model[2]==7) gs=mods%*%t(modt)
+ if (model[1]==7 & model[2]!=7) gs=mods*gs
+ if (model[2]==7 & model[1]!=7) gs=gs*modt
+
 
   if (plot==TRUE)
     {

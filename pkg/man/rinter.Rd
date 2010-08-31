@@ -60,7 +60,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 }
 
 \seealso{
- \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
+ \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
  }
  
 \examples{
@@ -108,8 +108,8 @@ data(northcumbria)
 cont1 = rinter(npoints=250, s.region=northcumbria, t.region=c(1,200), thetas=0,
  deltas=5000, thetat=0, deltat=10, recent=1, inhibition=FALSE)
 
-\dontrun{animation(cont1$xyt,  s.region=cont1$s.region, t.region=cont1$t.region,
- incident="darkgreen", prevalent="green3", runtime=15, cex=0.8)
+\dontrun{
+plot(cont1$xyt,pch=19,s.region=cont1$s.region,mark=TRUE,mark.col=4)
 }
 }
 

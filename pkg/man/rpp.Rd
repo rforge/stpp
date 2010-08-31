@@ -9,7 +9,7 @@ Generate one (or several) realisation(s) of the (homogeneous or inhomogeneous) P
 \usage{
 rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
     discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, 
-    Lambda=NULL, mut=NULL,...)
+    Lambda=NULL, ...)
 }
 
 \arguments{
@@ -36,8 +36,7 @@ rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
   is evaluated. }
   \item{lmax}{upper bound for the value of \eqn{\lambda(x,y,t)}{lambda(x,y,t)}, if
   \code{lambda} is a function.} 
-  \item{Lambda}{matrix of spatial intensity if \code{lambda} is a character.}
-  \item{mut}{vector of temporal intensity if \code{lambda} is a character.}  
+  \item{Lambda}{3D-array of spatio-temporal intensity if \code{lambda} is a character.}
   \item{...}{additional parameters if \code{lambda} is a function.}
 }
 
@@ -57,7 +56,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr> and Peter J Diggle.
 }
 
 \seealso{
- \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
+ \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
  }
 
 \examples{
@@ -89,10 +88,12 @@ h = mse2d(as.points(fmd[,1:2]), northcumbria, nsmse=30, range=3000)
 h = h$h[which.min(h$mse)]
 Ls = kernel2d(as.points(fmd[,1:2]), northcumbria, h, nx=100, ny=100)
 Lt = dim(fmd)[1]*density(fmd[,3], n=200)$y
-ipp2 = rpp(lambda="m", Lambda=Ls$z, mut=Lt, s.region=northcumbria, 
-t.region=c(1,200), discrete.time=TRUE)
-\dontrun{
+Lst=array(0,dim=c(100,100,200))
+for(k in 1:200) Lst[,,k] <- Ls$z*Lt[k]/dim(fmd)[1]
+ipp2 = rpp(lambda="m", Lambda=Lst, s.region=northcumbria, t.region=c(1,200), discrete.time=TRUE)
+\dontrun{           
+par(mfrow=c(1,1))
 image(Ls$x, Ls$y, Ls$z, col=grey((1000:1)/1000)); polygon(northcumbria)
-animation(ipp2$xyt, add=TRUE, cex=0.7, runtime=15)
+animation(ipp2$xyt, add=TRUE, cex=0.5, runtime=15)
 }
 }

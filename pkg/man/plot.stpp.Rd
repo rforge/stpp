@@ -1,14 +1,16 @@
 \name{plot.stpp}
 \alias{plot.stpp}
+\alias{plot}
 
 \title{Plot for spatio-temporal point objects}
 
 \description{
-This function plot xy-locations and cumulative distribution of the times.}
+This function plot either xy-locations and cumulative distribution of the times
+or xy-locations with time treated as a quantitative mark attached to each location.}
 
 \usage{
 ## S3 method for class 'stpp':
-plot(x, s.region=NULL, t.region=NULL, ...)
+plot(x, s.region=NULL, t.region=NULL, mark=FALSE, mark.cexmin=0.4, mark.cexmax=1.2, mark.col=1, ...)
 }
 
 \arguments{
@@ -19,8 +21,19 @@ plot(x, s.region=NULL, t.region=NULL, ...)
   \item{t.region}{vector containing the minimum and maximum values of
   the time interval. If \code{t.region} is missing,  the default limits are
   considered.}
+  \item{mark}{Logical. If \code{FALSE} (default), xy-locations and cumulative 
+  distribution of the times are plotted. If \code{TRUE}, the time is treated as 
+  a quantitative mark attached to each location, and the locations are plotted 
+  with the size and/or colour of the plotting symbol determined by the value of 
+  the mark.}
+  \item{mark.cexmin, mark.cexmax}{range of the size of the plotting symbol when
+  \code{mark=TRUE}.}
+  \item{mark.col}{colour of the plotting symbol when \code{mark=TRUE}. If \code{mark.col=0}, 
+  all locations have the same colour specified by the usual \code{col} argument.
+  Otherwise, can be 1 or "black" (default), 2 or "red", 3 or "green", 4 or "blue", in which cases
+  symbols colour is faded, and the darker corresponds to the most recent time.}
   \item{...}{further arguments to be passed to the function plot.
-  Typical arguments are \code{col}, \code{pch}.}
+  Typical argument is \code{pch}.}
  }
 
 \value{
