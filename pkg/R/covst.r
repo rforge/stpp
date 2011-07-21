@@ -14,12 +14,12 @@ set.cov <- function(separable,model,param,sigma2)
 
     for (i in 1:length(unique(model)))
       {
-        if (((isTRUE(separable)) && ((model[i]==models[5]) || (model[i]==models[6]))) || ((!(isTRUE(separable))) && ((model[i]==models[1]) || (model[i]==models[2]) || (model[i]==models[3]) || (model[i]==models[4]) || (model[i]==models[7])))) stop("'stcov' does not match with 'model'")
+        if (((isTRUE(separable)) & ((model[i]==models[5]) | (model[i]==models[6]))) | ((!(isTRUE(separable))) & ((model[i]==models[1]) | (model[i]==models[2]) | (model[i]==models[3]) | (model[i]==models[4]) | (model[i]==models[7])))) stop("'stcov' does not match with 'model'")
       }
 
     if (isTRUE(separable))
       {
-        if ((length(model)!=1) && (length(model)!=2))
+        if ((length(model)!=1) & (length(model)!=2))
           stop("for separable covariance functions, 'model' must be of length 1 or 2")
         if (length(model)==1)
           {
@@ -36,9 +36,9 @@ set.cov <- function(separable,model,param,sigma2)
             if (model=="stable")
               {
                 mods <- 2
-                if ((param[1] >2) || (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
+                if ((param[1] >2) | (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
                 modt <- 2
-                if ((param[2] >2) || (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
+                if ((param[2] >2) | (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
               }
             if (model=="cauchy")
               {
@@ -73,12 +73,12 @@ set.cov <- function(separable,model,param,sigma2)
                 if (model[1]=="stable")
                     {
                       mods <- 2
-                      if ((param[1] >2) || (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
+                      if ((param[1] >2) | (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
                     }
                 if (model[2]=="stable")
                   {
                     modt <- 2
-                    if ((param[2] >2) || (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
+                    if ((param[2] >2) | (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
                   }
                 if (model[1]=="cauchy")
                   {
@@ -114,17 +114,17 @@ set.cov <- function(separable,model,param,sigma2)
           {
             mod <- 5
             if (param[6]<2) stop("for Gneiting's covariance function, the sixth parameter must be greater than 2")
-            if ((param[3]<=0) || (param[3]>2)) stop("for Gneiting's covariance function, the third parameter must lie in (0,2]")
-            if ((param[4]<=0) || (param[4]>1)) stop("for Gneiting's covariance function, the fourth parameter must lie in (0,1]")
-            if ((param[5]!=1) && (param[5]!=2) && (param[5]!=3)) stop("for Gneiting's covariance function, the fifth parameter must be 1, 2 or 3")
-            if ((param[2]!=1) && (param[2]!=2)  && (param[2]!=3)) stop("for Gneiting's covariance function, the second parameter must be 1, 2 or 3")
-            if ((param[2]==1) && ((param[1]<0) || (param[1]>2))) stop("for Gneiting's covariance function, if the second parameter equals 1, the first parameter must lie in [0,2]") 
-            if ((param[2]==2) && (param[1]<=0)) stop("for Gneiting's covariance function, if the second parameter equals 2, the first parameter must be strictly positive")            
+            if ((param[3]<=0) | (param[3]>2)) stop("for Gneiting's covariance function, the third parameter must lie in (0,2]")
+            if ((param[4]<=0) | (param[4]>1)) stop("for Gneiting's covariance function, the fourth parameter must lie in (0,1]")
+            if ((param[5]!=1) & (param[5]!=2) & (param[5]!=3)) stop("for Gneiting's covariance function, the fifth parameter must be 1, 2 or 3")
+            if ((param[2]!=1) & (param[2]!=2) & (param[2]!=3)) stop("for Gneiting's covariance function, the second parameter must be 1, 2 or 3")
+            if ((param[2]==1) & ((param[1]<0) | (param[1]>2))) stop("for Gneiting's covariance function, if the second parameter equals 1, the first parameter must lie in [0,2]") 
+            if ((param[2]==2) & (param[1]<=0)) stop("for Gneiting's covariance function, if the second parameter equals 2, the first parameter must be strictly positive")            
           }
         if (model=="cesare")
           {
             mod <- 6
-            if (((param[1]>2) || (param[1]<1)) || ((param[2]>2) || (param[2]<1))) stop("for De Cesare's model, the first and second parameters must lie in [1,2]")
+            if (((param[1]>2) | (param[1]<1)) | ((param[2]>2) | (param[2]<1))) stop("for De Cesare's model, the first and second parameters must lie in [1,2]")
             if (param[3]<3/2) stop("for De Cesare's model, the third parameter must be greater than 3/2")
           }
       }

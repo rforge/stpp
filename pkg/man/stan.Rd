@@ -1,12 +1,12 @@
-\name{stani}
-\alias{stani}
+\name{stan}
+\alias{stan}
 \title{(3D) space-time data animation}
 \description{
  Displays (x,y,t) point data and enables dynamic highlighting of time slices.
 }
 \usage{
-stani(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,
-states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12)))
+stan(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,
+states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12)),axes=TRUE)
 }
 \arguments{
   \item{xyt}{A 3-column matrix of x,y,t coordinates}
@@ -19,6 +19,7 @@ states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12)))
   \item{bgimage}{An list with x,y vectors and z matrix to display on the
     background plane}
   \item{bgcol}{A colour palette vector with which to draw the bgimage}
+  \item{axes}{logical value indicating whether labels should be added.}
 }
 \details{
 This function requires the \code{rpanel} and \code{rgl} packages. It
@@ -67,7 +68,7 @@ define the edges, but bgimage does not allow that.
 \value{
 A list of the slider parameters when the dialog is quitted.
 }
-\author{Barry Rowlingson <b.rowlingson@lancaster.ac.uk>}
+\author{Barry Rowlingson <b.rowlingson@lancaster.ac.uk>, Edith Gabriel}
 
 \keyword{ hplot }
 

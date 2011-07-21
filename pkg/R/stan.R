@@ -79,9 +79,21 @@
  return(panel)
 }
 
-stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12))){
+stan <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12)),axes=TRUE){
   require(rgl)
   require(rpanel)
+
+X=(xyt[,1]-min(xyt[,1]))/(diff(range(xyt[,1])))
+Y=(xyt[,2]-min(xyt[,2]))/(diff(range(xyt[,2])))
+Z=(xyt[,3]-min(xyt[,3]))/(diff(range(xyt[,3])))
+
+tlim=(tlim-min(xyt[,3]))/(diff(range(xyt[,3])))
+
+if(!missing(bgpoly)) bgpoly=cbind((bgpoly[,1]-min(xyt[,1]))/(diff(range(xyt[,1]))),(bgpoly[,2]-min(xyt[,2]))/(diff(range(xyt[,2]))))
+
+
+XYT=as.3dpoints(X,Y,Z)
+
   if(missing(states)){
     ## default colouring scheme:
     states=list(
@@ -96,16 +108,16 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
   }
 
   maxRadius = max(states$past$radius,states$present$radius,states$future$radius)
-  xr = range(xyt[,1],na.rm=TRUE)
-  yr = range(xyt[,2],na.rm=TRUE)
-  tr = range(xyt[,3],na.rm=TRUE)
+  xr = range(XYT[,1],na.rm=TRUE)
+  yr = range(XYT[,2],na.rm=TRUE)
+  tr = range(XYT[,3],na.rm=TRUE)
   diag=sqrt(diff(xr)^2+diff(yr)^2+diff(tr)^2)
 
   states$past$radius=states$past$radius*diag
   states$present$radius=states$present$radius*diag
   states$future$radius=states$future$radius*diag
     
-  .setPlot(xr[1],xr[2],yr[1],yr[2],tr[1],tr[2],maxRadius)
+  .setPlot(xr[1],xr[2],yr[1],yr[2],tr[1],tr[2],maxRadius,xyt=xyt,axes=axes)
 
   if(!missing(bgpoly)){
     poly=rbind(bgpoly,bgpoly[1,])
@@ -127,30 +139,30 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
     .setBG(bgimage,min(tr),col=bgcol)
   }
   
-  xyt=data.frame(xyt[,1:3])
-  xyt$id=NA
+  XYT=data.frame(XYT[,1:3])
+  XYT$id=NA
   ## initially all points will need redrawing:
-  xyt$state=-1
+  XYT$state=-1
 
   
   ## these points will get redrawn immediately... probably a better way to do this:
   cat("Setting up...")
-  npts = dim(xyt)[1]
+  npts = dim(XYT)[1]
   if(npts>=100){
     tenths = as.integer(seq(1,npts,len=10))
   }
     
-  for(i in 1:(dim(xyt)[1])){
+  for(i in 1:(dim(XYT)[1])){
     if(npts>=100){
       tn = (1:10)[tenths == i]
       if(length(tn)>0){
         cat(paste(11-tn,"...",sep=""))
       }
     }
-    xyt[i,4]=points3d(xyt[i,1,drop=FALSE],xyt[i,2,drop=FALSE],xyt[i,3,drop=FALSE],alpha=0.0)
+    XYT[i,4]=points3d(XYT[i,1,drop=FALSE],XYT[i,2,drop=FALSE],XYT[i,3,drop=FALSE],alpha=0.0)
   }
   cat("...done\n")
-  env = .rp.stan3d(xyt,tlim,twid,states)
+  env = .rp.stan3d(XYT,tlim,twid,states)
   ret=list()
   for(n in ls(env)){
     ret[[n]]=get(n,env=env)
@@ -164,23 +176,42 @@ stani <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=
   return(lim)
 }
 
-.setPlot=function(xmin,xmax,ymin,ymax,tmin,tmax,radius=1/20){
+.setPlot=function(xmin,xmax,ymin,ymax,tmin,tmax,radius=1/20,xyt,axes){
   require(rgl)
   diag=sqrt((xmax-xmin)^2+(ymax-ymin)^2+(tmax-tmin)^2)
   xr=c(xmax,xmin)+c(radius*(xmax-xmin),-radius*(xmax-xmin))*2
   yr=c(ymax,ymin)+c(radius*(ymax-ymin),-radius*(ymax-ymin))*2
   tr=c(tmax,tmin)+c(radius*(tmax-tmin),-radius*(tmax-tmin))*2
   
-
   plot3d(xr,yr,tr,type="n",col="red",box=TRUE,axes=FALSE,xlab="x",ylab="y",zlab="t")
-  axis3d('x-',tick=FALSE)
-  axis3d('y-',tick=FALSE)
-  axis3d('z-')
-  par3d(FOV=0)
-  AR=(xmax-xmin)/(ymax-ymin)
-  aspect3d(AR,1,1)
-  par3d(userMatrix = rotationMatrix(0, 1,0,0))
 
+	if(axes==TRUE)
+	{
+	xr2=min(xyt[,1])+range(xr)*(diff(range(xyt[,1])))
+ 	yr2=min(xyt[,2])+range(yr)*(diff(range(xyt[,2])))
+	tr2=min(xyt[,3])+range(tr)*(diff(range(xyt[,3])))
+	xl=round(seq(min(xr2),max(xr2),length=5))
+	yl=round(seq(min(yr2),max(yr2),length=5))
+	tl=round(seq(min(tr2),max(tr2),length=5))
+
+	axis3d('x-',at=seq(0,1,length=5),labels=xl,nticks=5)
+  	axis3d('y-',at=seq(0,1,length=5),labels=yl,nticks=5)
+  	axis3d('z-',at=seq(0,1,length=5),labels=tl,nticks=5)
+  	par3d(FOV=0)
+  	AR=(xmax-xmin)/(ymax-ymin)
+  	aspect3d(AR,1,1)
+  	par3d(userMatrix = rotationMatrix(0, 1,0,0))
+	}
+	else
+	{
+	axis3d('x-',labels="")
+  	axis3d('y-',labels="")
+  	axis3d('z-',labels="")
+  	par3d(FOV=0)
+  	AR=(xmax-xmin)/(ymax-ymin)
+  	aspect3d(AR,1,1)
+  	par3d(userMatrix = rotationMatrix(0, 1,0,0))
+	}
 }
 
 .setBG=function(xyz,zplane,col=heat.colors(12)){

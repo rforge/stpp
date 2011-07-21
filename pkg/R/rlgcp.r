@@ -177,7 +177,7 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
       npts <- round(lambdamax/(s.area*t.area),0)
       if (npts==0) stop("there is no data to thin")
   
-      if ((replace==FALSE) && (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
+      if ((replace==FALSE) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
 
       if (discrete.time==TRUE)
         {

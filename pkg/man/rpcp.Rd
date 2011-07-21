@@ -8,9 +8,9 @@ S x T.
 }
 
 \usage{
- rpcp(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, 
- mc=NULL, nsim=1, cluster="uniform", dispersion, infectious=TRUE, 
- edge = "larger.region", larger.region, ...)
+ rpcp(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, 
+ cluster="uniform", dispersion, infectious=TRUE, edge = "larger.region", 
+ larger.region=larger.region, tronc=1,...)
 }
 
 \arguments{
@@ -49,6 +49,7 @@ S x T.
   and the larger time interval is \code{t.region} enlarged by the temporal related 
   value of \code{dispersion}.
     One can over-ride default using the 2-vector parameter \code{larger.region}.}
+    \item{tronc}{parameter of the truncated exponential distribution for the distribution of children.}
   \item{...}{additional parameters of the intensity of the parent process.} 
 }
 
@@ -66,7 +67,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 }
 
 \seealso{
- \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
+ \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stan}} for plotting space-time point patterns.
  }
 
 \examples{
@@ -82,7 +83,7 @@ animation(pcp1$xyt, s.region=pcp1$s.region, t.region=pcp1$t.region,runtime=5)
 lbda <- function(x,y,t,a){a*exp(-4*y) * exp(-2*t)}
 pcp2 <- rpcp(nparents=50, npoints=500, cluster="normal", lambda=lbda, a=4000/((1-exp(-4))*(1-exp(-2))))
 \dontrun{
-stani(pcp2$xyt)
+stan(pcp2$xyt)
 }
 
 }

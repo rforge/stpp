@@ -229,7 +229,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       x <- xy[,1]
       y <- xy[,2]
       
-      if ((replace==F) && (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
+      if ((replace==F) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
       if (discrete.time==T)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
@@ -327,7 +327,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       npts <- npoints
       if (npts==0) stop("there is no data to thin")
 
-      if ((replace==F) && (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
+      if ((replace==F) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
       if (discrete.time==T)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)

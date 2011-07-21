@@ -56,7 +56,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr> and Peter J Diggle.
 }
 
 \seealso{
- \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
+ \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stan}} for plotting space-time point patterns.
  }
 
 \examples{
@@ -64,7 +64,7 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr> and Peter J Diggle.
 # ---------------------------
 hpp1 <- rpp(lambda=200,replace=FALSE)
 
-\dontrun{stani(hpp1$xyt)}
+\dontrun{stan(hpp1$xyt)}
 
 # fixed number of points, discrete time, with time repeat.
 data(northcumbria)
@@ -79,7 +79,7 @@ animation(hpp2$xyt, s.region=hpp2$s.region, t.region=hpp2$t.region, runtime=10, 
 # intensity defined by a function
 lbda1 = function(x,y,t,a){a*exp(-4*y) * exp(-2*t)}
 ipp1 = rpp(lambda=lbda1, npoints=400, a=3200/((1-exp(-4))*(1-exp(-2))))
-\dontrun{stani(ipp1$xyt)}
+\dontrun{stan(ipp1$xyt)}
 
 # intensity defined by a matrix
 data(fmd)

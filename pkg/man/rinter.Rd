@@ -60,13 +60,13 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 }
 
 \seealso{
- \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stani}} for plotting space-time point patterns.
+ \code{\link{plot.stpp}}, \code{\link{animation}} and \code{\link{stan}} for plotting space-time point patterns.
  }
  
 \examples{
 # simple inhibition process
 inh1 = rinter(npoints=200,thetas=0,deltas=0.05,thetat=0,deltat=0.001,inhibition=TRUE)
-\dontrun{stani(inh1$xyt)}
+\dontrun{stan(inh1$xyt)}
 
 # inhibition process using hs and ht defined by the user
 hs = function(d,theta,delta,mus=0.1)
