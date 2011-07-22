@@ -82,7 +82,7 @@
 
 
 \begin{center}
-  {\Large {\bf STPP: Plotting, simulating and Analysing Spatio-Temporal Point Patterns}}
+  {\Large {\bf STPP: Plotting, simulating and analysing Spatio-Temporal Point Patterns}}
 
   \bigskip
 
@@ -319,8 +319,8 @@ object of class `stpp' as follows.
 \end{verbatim}
 \begin{figure}
 \centering
-\epsfig{file=fmdxy.eps,width=5cm,height=5cm}
-\epsfig{file=fmdt.eps,width=5cm,height=5cm}
+%\epsfig{file=fmdxy.eps,width=5cm,height=5cm}
+%\epsfig{file=fmdt.eps,width=5cm,height=5cm}
 \caption{Static two-panel plot of
 data from the 2001 UK FMD epidemic in the county of Cumbria.}
 \label{fig:fmd1}
@@ -331,7 +331,7 @@ attached to each location, and the locations are plotted with the size and/or co
 symbol determined by the value of the mark.
 \begin{figure}
 \centering
-\epsfig{file=fmd.eps,width=6cm,height=6cm}
+%\epsfig{file=fmd.eps,width=6cm,height=6cm}
 \caption{Static plot of
 data from the 2001 UK FMD epidemic. Time is treated as a quantitative mark; light grey/small dots correspond to the oldest events and dark grey/large dots correspond to the most recent events.}
 \label{fig:fmd2}
@@ -396,7 +396,7 @@ the spatio-temporal aggregation or regularity of clustering. Indeed, for any inh
 It can also be used to test for space-time clustering and space-time interaction (Gabriel and Diggle, 2009; M{\o}ller and Ghorbani, 2011).
 
 \noindent
-The function \verb#STIKhat# provides a non parametric estimation of the STIK function (as defined in Gabriel and Diggle, 2009). 
+The function \verb#STIKhat# provides a non parametric estimation of the STIK function (as defined in Gabriel and Diggle, 2009).
 It has been applied to FMD data under the assumption of separability of the spatio-temporal intensity. 
 \begin{verbatim}
 > FMD=as.3dpoints(fmd[,1]/1000,fmd[,2]/1000,fmd[,3])
@@ -409,13 +409,13 @@ It has been applied to FMD data under the assumption of separability of the spat
 > h = mse2d(pts=FMD[,1:2], poly=northcumbria/1000, nsmse=100, range=5)
 > hs=h$h[h$mse==min(h$mse)]
 > require(spatialkernel)
-> mhat <- lambdahat(pts=as.points(FMD[,1:2]), h=hs, gpts=as.points(FMD[,1:2]), 
+> mhat <- lambdahat(pts=as.points(FMD[,1:2]), h=hs, gpts=as.points(FMD[,1:2]),
           poly = northcumbria/1000, edge = TRUE)$lambda
 
 > # estimation of the STIK function
 > u <- seq(0,10,by=1)
 > v <- seq(0,15,by=1)
-> stik <- STIKhat(xyt=FMD, s.region=northcumbria/1000,t.region=c(1,200), 
+> stik <- STIKhat(xyt=FMD, s.region=northcumbria/1000,t.region=c(1,200),
           lambda=mhat*mut/dim(fmd)[1], dist=u, times=v, infectious=T)
 \end{verbatim}
 We can plot the estimate by using the function \verb#plotK#.
@@ -424,11 +424,11 @@ We can plot the estimate by using the function \verb#plotK#.
 > plotK(stik)
 > plotK(stik,persp=T,theta=-65,phi=35)
 \end{verbatim}
-Figure~\ref{fig:stik} shows such plot for FMD data.
+Figure~\ref{fig:stik} shows such plot for FMD data where $u$ gives distances in kilometers and $v$ times in days.
 \begin{figure}
 \centering
-\epsfig{file=stik.contour.eps,width=6cm,height=6cm}
-\epsfig{file=stik.persp.eps,width=6cm,height=6cm}
+%\epsfig{file=stik.contour.eps,width=6cm,height=6cm}
+%\epsfig{file=stik.persp.eps,width=6cm,height=6cm}
 \caption{Contour plot (left) and perspective plot (right) of the STIK function estimated from FMD data.}
 \label{fig:stik}
 \end{figure}
@@ -776,8 +776,8 @@ displays the step function for $\delta=4$ and $\theta=0.3$ whilst the right-hand
 panel shows the Gaussian function for $\delta=2$ and $\theta=9$.
 \begin{figure}
 \centering
-\epsfig{file=inhibstep.eps,width=4cm,height=4cm}
-\epsfig{file=inhibgauss.eps,width=4cm,height=4cm}
+%\epsfig{file=inhibstep.eps,width=4cm,height=4cm}
+%\epsfig{file=inhibgauss.eps,width=4cm,height=4cm}
 \caption{Inhibition functions implemented in {\tt rinter}; {\it left}: step,
 {\it right}: gaussian.}
 \label{fig:hinhib}
@@ -846,8 +846,8 @@ displays the step function for $\delta=4$ and $\theta=0.3$ and the right-hand
 panel shows the Gaussian function for $\delta=2$ and $\theta=9$.
 \begin{figure}
 \centering
-\epsfig{file=contstep.eps,width=4cm,height=4cm}
-\epsfig{file=contgauss.eps,width=4cm,height=4cm}
+%\epsfig{file=contstep.eps,width=4cm,height=4cm}
+%\epsfig{file=contgauss.eps,width=4cm,height=4cm}
 \caption{Contagious functions implemented in {\tt rinter}; {\it left}: step,
 {\it right}: gaussian.}
 \label{fig:hcont}
@@ -1010,11 +1010,11 @@ It can be chosen among:
     \gamma \\
     0 , & \text{ otherwise}
   \end{array} \right.,$}
- \parbox{4cm}{\sloppy \epsfig{file=infection.step.ps,width=3.5cm,height=3.5cm} }
+ %\parbox{4cm}{\sloppy %\epsfig{file=infection.step.ps,width=3.5cm,height=3.5cm} }
 \item \parbox{10cm}{\sloppy
     gaussian: $h(t) = \beta \exp \lce - \big( t - (t_{k-1} + \alpha
     + \gamma/2) \big)^2 / 2(\gamma / 8)^2 \rce$.}
- \parbox{4cm}{\sloppy \epsfig{file=infection.gaussian.ps,width=3.5cm,height=3.5cm} }
+ %\parbox{4cm}{\sloppy %%\epsfig{file=infection.gaussian.ps,width=3.5cm,height=3.5cm} }
 \end{itemize}
 
 \noindent
@@ -1023,8 +1023,8 @@ or a gaussian function (right), with $\alpha=0.2$, $\beta=0.7$ and $\gamma=2$.
 Dots correspond to the times of events.
 \begin{figure}
 \centering
-  \epsfig{file=cumulative.step.ps,width=5cm,height=5cm}
-  \epsfig{file=cumulative.gaussian.ps,width=5cm,height=5cm}
+  %%\epsfig{file=cumulative.step.ps,width=5cm,height=5cm}
+  %%\epsfig{file=cumulative.gaussian.ps,width=5cm,height=5cm}
 \caption{Illustration of $\mu(t)$ for $h$ as a step function (left)
 or a gaussian function (right).}
 \label{fig:cuminfec}

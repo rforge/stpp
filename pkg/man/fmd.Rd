@@ -3,8 +3,10 @@
 \alias{fmd}
 \title{2001 food-and-mouth epidemic, north Cumbria (UK)}
 \description{
-This data set gives the spatial locations and reported times of 
-food-and-mouth disease in north Cumbria (UK), 2001.
+This data set gives the spatial locations and reported times of food-and-mouth 
+disease in north Cumbria (UK), 2001. It is of no scientific value, as it 
+deliberately excludes confidential information on farms at risk in the
+study-region. It is included in the package purely as an illustrative example.
 }
 \usage{data(fmd)}
 \format{A matrix containing (x,y,t) coordinates of the 648 observations.}

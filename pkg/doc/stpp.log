@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-1.40.8-alpha-20080323 (MiKTeX 2.7) (preloaded format=latex 2008.7.6)  21 JUL 2011 15:53
+This is pdfTeX, Version 3.1415926-1.40.8-alpha-20080323 (MiKTeX 2.7) (preloaded format=latex 2008.7.6)  22 JUL 2011 10:23
 entering extended mode
-**C:/Documents*and*Settings/edith/Mes*documents/stppWorking/pkg/doc/docV2.tex
-("C:/Documents and Settings/edith/Mes documents/stppWorking/pkg/doc/docV2.tex"
+**C:/Documents*and*Settings/edith/Mes*documents/stppWorking/pkg/doc/stpp.tex
+("C:/Documents and Settings/edith/Mes documents/stppWorking/pkg/doc/stpp.tex"
 LaTeX2e <2005/12/01>
 Babel <v3.8j> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman, ngerman, french, loaded.
@@ -152,7 +152,7 @@ Package: inputenc 2006/05/05 v1.1b Input encoding file
 
 ("C:\Program Files\MiKTeX 2.7\tex\latex\base\latin1.def"
 File: latin1.def 2006/05/05 v1.1b Input encoding file
-)) (docV2.aux)
+)) (stpp.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 80.
 LaTeX Font Info:    ... okay on input line 80.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 80.
@@ -244,18 +244,18 @@ oisson", t.distr="uniform",[]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[16] [17] [18] [19] (docV2.aux) )
+[16] [17] [18] [19] (stpp.aux) )
 (\end occurred inside a group at level 1)
 
 ### simple group (level 1) entered at line 142 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
  1727 strings out of 95338
- 20112 string characters out of 1184090
+ 20102 string characters out of 1184090
  73659 words of memory out of 1500000
  4903 multiletter control sequences out of 110000
  13844 words of font info for 52 fonts, out of 1200000 for 2000
  14 hyphenation exceptions out of 8191
- 27i,12n,43p,496b,299s stack positions out of 5000i,500n,10000p,200000b,5000s
+ 27i,12n,43p,495b,299s stack positions out of 5000i,500n,10000p,200000b,5000s
 
-Output written on docV2.dvi (19 pages, 107840 bytes).
+Output written on stpp.dvi (19 pages, 107584 bytes).
