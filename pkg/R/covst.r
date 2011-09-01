@@ -55,9 +55,9 @@ set.cov <- function(separable,model,param,sigma2)
             if (model=="matern") 
 			{
                   mods <- 7
-			if (param[2]<=0 | param[1]<=0) stop("Matérn model parameters must be strictly positive")
+			if (param[2]<=0 | param[1]<=0) stop("Matern model parameters must be strictly positive")
                   modt <- 7
-			if (param[3]<=0 | param[4]<=0) stop("Matérn model parameters must be strictly positive")
+			if (param[3]<=0 | param[4]<=0) stop("Matern model parameters must be strictly positive")
                   }
           }
             if (length(model)==2)
@@ -97,12 +97,12 @@ set.cov <- function(separable,model,param,sigma2)
                 if (model[1]=="matern")
 			{
                   mods <- 7
-			if (param[2]<=0 | param[1]<=0) stop("Matérn model parameters must be strictly positive")
+			if (param[2]<=0 | param[1]<=0) stop("Matern model parameters must be strictly positive")
                   }
 		    if (model[2]=="matern")
 			{
                   modt <- 7
-			if (param[3]<=0 | param[4]<=0) stop("Matérn model parameters must be strictly positive")
+			if (param[3]<=0 | param[4]<=0) stop("Matern model parameters must be strictly positive")
                   }
               }
       }
