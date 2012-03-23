@@ -8,18 +8,20 @@ C
       subroutine stikfunction(x,y,txy,n,xp,yp,np,s,ns,t,nt,
      +     bsupt,binft,lambda,infd,edg,hkhat)
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
-c     x,y,txy: coordinates and times of the point process of length n,
-c     xp,yp: coordinates of the np points defining the polygonal region,
-c     s: vector of the ns distances at which to calculate the K function,
+c     x,y,txy: coordinates and times of the point process of length n
+c     xp,yp: coordinates of the np points defining the polygonal
+c            region
+c     s: vector of the ns distances at which to calculate the K
+c        function,
 c     t: vector of the nt times at which to calculate the K function,
 c     lambda: vectors of the space-time intensity functions evaluated
 c             to (x,y,txy),
 c     bint, bsupt: lower and upper boundaries of the time domain,
 c     hkhat: zero matrix of dimension ns x nt.
 c
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       implicit real*8(a-h,o-z)
 
@@ -206,8 +208,8 @@ c     work with the trial point at origin
          cx=x2-x1
          cy=y2-y1
 
-c     these are the coefficients of the quadratic giving the intercept of
-c     line and circle.
+c     these are the coefficients of the quadratic giving the
+c     intercept of line and circle.
          a=cx*cx+cy*cy
          b=2*(x1*cx+y1*cy)
          c=x1*x1+y1*y1-r*r
@@ -229,7 +231,8 @@ c     find the angle to this point on the circle
                cross(ncross)=ctemp
 c     check crossing of circle with vertex
             else if (abs(t1).le.tiny) then
-c     compare this polygon segment's direction with that of the previous one
+c     compare this polygon segment's direction with that of the
+c     previous one
                nprev = (mod((ic+ (np-2)),np)+1)
                x0 = xp(nprev) - x
                y0 = yp(nprev) - y
@@ -252,7 +255,8 @@ c     see if the polygon passes through the circle here
                cross(ncross)=ctemp
 c     check crossing of circle with vertex
             else if (abs(t2).le.tiny)then
-c     compare this polygon segment's direction with that of the previous one
+c     compare this polygon segment's direction with that of the
+c     previous one
                nprev = (mod((ic+ (np-2)),np)+1)
                x0 = xp(nprev) - x
                y0 = yp(nprev) - y
@@ -270,11 +274,12 @@ c     see if the polygon passes through the circle here
          end if
       end do
 
-c     now we have all the crossing point angles stored in cross(1:ncross)
+c     now we have all the crossing point angles stored in
+c     cross(1:ncross)
 
-c     if ncross = 0 then the total angle within the poly is 2*pi unless the
-c     circle is large and spans the polygon. this should be checked
-c     beforehand so it's okay to assume 2*pi here.
+c     if ncross = 0 then the total angle within the poly is 2*pi
+c     unless the circle is large and spans the polygon. this should
+c     be checked beforehand so it's okay to assume 2*pi here.
 
       if (ncross.eq.0) then
          totang=2*pi
@@ -283,8 +288,8 @@ c     beforehand so it's okay to assume 2*pi here.
 c     sort into ascending order
          call sort2(cross,ncross)
 
-c     fix the ncross+1'th element to be the first plus 2pi so that the
-c     list is circular...
+c     fix the ncross+1'th element to be the first plus 2pi so that
+c     the list is circular...
          cross(ncross+1)=cross(1)+2*pi
 
 c     check that the number of crossings is even - if not then error.
@@ -303,11 +308,11 @@ c     now find a nice spot to do the point-in-poly search
             end if
          end do
 
-c     icm is now the index of the crossing with the largest gap between it
-c     and the next crossing point
+c     icm is now the index of the crossing with the largest gap
+c     between it and the next crossing point
 
-c     test for point in poly of the point on the circle between these points
-         angtes=(cross(icm)+cross(icm+1))/2.
+c     test for point in poly of the point on the circle between these
+c     points angtes=(cross(icm)+cross(icm+1))/2.
 
          xtest=x+r*cos(angtes)
          ytest=y+r*sin(angtes)
@@ -315,19 +320,21 @@ c     test for point in poly of the point on the circle between these points
 c     find out if test point is in the polygon boundary
          linpol=ipippa(xtest,ytest,xp,yp,np)
 
-c     find the total angle between (odd-even) crossings (i.e. 1-2 + 3-4 + ...
+c     find the total angle between (odd-even) crossings
+c     (i.e. 1-2 + 3-4 + ...)
         totang = 0.
         do ic=1,ncross-1,2
            totang = totang + (cross(ic+1)-cross(ic))
         end do
 
 c     If the point we tested for p-i-p was on an odd-even
-c     section and was in the poly, then totang is the amount of circle inside
-c     the polygon. if the point was outside the polygon, then we need to
-c     subtract totang from 2*pi radians to get the angle inside the polygon.
-c     conversely, if the point tested was between even-odd crossings and
-c     outside the polygon, then totang is the angle we want, and if inside
-c     the polygon then again we have to do 2*pi-totang
+c     section and was in the poly, then totang is the amount of circle
+c     inside the polygon. if the point was outside the polygon, then
+c     we need to subtract totang from 2*pi radians to get the angle
+c     inside the polygon. conversely, if the point tested was between
+c     even-odd crossings and outside the polygon, then totang is the
+c     angle we want, and if inside the polygon then again we have to
+c     do 2*pi-totang
 
         if ( (((mod(icm,2).eq.1).and.(linpol.eq.0))  .or.
      &       ((mod(icm,2).eq.0).and.(linpol.eq.1)) ) ) then
