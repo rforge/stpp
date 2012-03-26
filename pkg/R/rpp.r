@@ -1,38 +1,5 @@
 make.grid <- function(nx,ny,poly)
   {
-  #
-  # Generate a rectangular grid of points in a polygon
-  #
-  # Requires Splancs package.
-  #
-  # Arguments:
-  #
-  #   nx, ny: grid dimensions.
-  #
-  #   poly: two columns matrix specifying polygonal region containing
-  #         all data locations. If poly is missing, the unit square is
-  #         considered.
-  #
-  # Value:
-  #
-  #    x, y: numeric vectors giving the coordinates of the points
-  #          of the rectangular grid,
-  #
-  #    X, Y: matrix containing x and y coordinates respectively,
-  #
-  #     pts: index of the grid points belonging to the polygon,
-  #
-  #  xinc, yinc: mesh size of the grid,
-  #
-  #   mask: nx*ny matrix of logicals. TRUE if the grid point belongs
-  #         to the polygon.
-  #  
-  ##
-  ## E. GABRIEL, 28/12/2005
-  ##
-
-#    library(splancs)
-
     if (missing(poly)) poly <- matrix(c(0,0,1,0,1,1,0,1),4,2,T)
     
     if ((nx < 2) || (ny < 2)) stop("the grid must be at least of size 2x2")
@@ -75,7 +42,7 @@ make.grid <- function(nx,ny,poly)
 
     X[pts] <- TRUE
     X[X!=TRUE] <- FALSE
-    mask <- matrix(X,ncol=ny,nrow=nx,byrow=T)
+    mask <- matrix(X,ncol=ny,nrow=nx,byrow=TRUE)
 
     invisible(return(list(x=xgrid,y=ygrid,X=xx,Y=yy,pts=pts,xinc=xinc,yinc=yinc,mask=matrix(as.logical(mask),nx,ny))))
   }
@@ -114,7 +81,7 @@ rhpp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
-          if ((length(vect)<npoints) & (replace==F))
+          if ((length(vect)<npoints) & (replace==FALSE))
             stop("when replace=FALSE and discrete.time=TRUE, the length of seq(t.region[1],t.region[2],by=1) must be greater than the number of points")
           names(vect) <- 1:length(vect) 
           M <- sample(vect,npoints,replace=replace)
@@ -179,7 +146,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
     {
       s.grid <- make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
-      if (discrete.time==T)
+      if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
           if (nt>length(vect))
@@ -203,25 +170,25 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           for(it in 1:nt)
             {
               L <- lambda(as.vector(s.grid$X),as.vector(s.grid$Y),t.grid$times[it],...)
-              M <- matrix(L,ncol=ny,nrow=nx,byrow=T)
+              M <- matrix(L,ncol=ny,nrow=nx,byrow=TRUE)
               M[!(s.grid$mask)] <- NaN
               Lambda[,,it] <- M
             }
         }
       
-      if (is.null(npoints)==T)
+      if (is.null(npoints)==TRUE)
         {
           if (t.area==0)
-            { en <- sum(Lambda,na.rm=T)*s.grid$xinc*s.grid$yinc }
+            { en <- sum(Lambda,na.rm=TRUE)*s.grid$xinc*s.grid$yinc }
           else
             {
-              en <- sum(Lambda,na.rm=T)*s.grid$xinc*s.grid$yinc*t.grid$tinc 
+              en <- sum(Lambda,na.rm=TRUE)*s.grid$xinc*s.grid$yinc*t.grid$tinc 
               npoints <- round(rpois(n=1,lambda=en),0)
             }
         }
 
       if (is.null(lambdamax))
-        lambdamax <- max(Lambda,na.rm=T)
+        lambdamax <- max(Lambda,na.rm=TRUE)
       npts <- round(lambdamax/(s.area*t.area),0)
       if (npts==0) stop("there is no data to thin")
       
@@ -229,8 +196,8 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       x <- xy[,1]
       y <- xy[,2]
       
-      if ((replace==F) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
-      if (discrete.time==T)
+      if ((replace==FALSE) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
+      if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
           times.init <- sample(vect,nt,replace=replace)
@@ -243,12 +210,12 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       prob <-  lambda(x,y,times,...)/lambdamax
       u <- runif(npts)
       retain <- u <= prob
-      if (sum(retain==F)==length(retain))
+      if (sum(retain==FALSE)==length(retain))
         {
           lambdas <- matrix(0,nrow=nx,ncol=ny)
           for(ix in 1:nx){for(iy in 1:ny){
-            lambdas[ix,iy] <- median(Lambda[ix,iy,],na.rm=T)}}
-          lambdamax <- max(lambdas,na.rm=T)
+            lambdas[ix,iy] <- median(Lambda[ix,iy,],na.rm=TRUE)}}
+          lambdamax <- max(lambdas,na.rm=TRUE)
           prob <-  lambda(x,y,times,...)/lambdamax
           retain <- u <= prob
           if (sum(retain==F)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
@@ -265,7 +232,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           xy <- as.matrix(csr(poly=s.region,npoints=npoints-neffec))
           if(dim(xy)[2]==1){wx <- xy[1]; wy <- xy[2]}
           else{wx <- xy[,1]; wy <- xy[,2]}
-          if(replace==F)
+          if(replace==FALSE)
             { wsamp <- sample(samp.remain,npoints-neffec,replace=replace) }
           else{ wsamp <- sample(1:nt,npoints-neffec,replace=replace) }
           wtimes <- times.init[wsamp]
@@ -298,7 +265,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       s.grid <- make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
 
-      if (discrete.time==T)
+      if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
           if (nt>length(vect))
@@ -318,17 +285,17 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           
       if (is.null(npoints))
         {
-	    en <- sum(Lambda,na.rm=T)*s.grid$xinc*s.grid$yinc*t.grid$tinc 
+	    en <- sum(Lambda,na.rm=TRUE)*s.grid$xinc*s.grid$yinc*t.grid$tinc 
           npoints <- round(rpois(n=1,lambda=en),0)
         }
       if (is.null(lambdamax))
-        lambdamax <- max(Lambda,na.rm=T)
+        lambdamax <- max(Lambda,na.rm=TRUE)
 #      npts <- round(lambdamax/(s.area*t.area),0)
       npts <- npoints
       if (npts==0) stop("there is no data to thin")
 
-      if ((replace==F) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
-      if (discrete.time==T)
+      if ((replace==FALSE) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
+      if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
           times.init <- sample(vect,nt,replace=replace)
@@ -339,8 +306,8 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       samp <- sample(1:nt,npts,replace=replace)
       times <- times.init[samp]
 
-      retain.eq.F <- F
-      while(retain.eq.F==F)
+      retain.eq.F <- FALSE
+      while(retain.eq.F==FALSE)
         {
           xy <- matrix(csr(poly=s.region,npoints=npts),ncol=2)
           x <- xy[,1]
@@ -367,21 +334,21 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           
           u <- runif(npts)
           retain <- u <= prob
-          if (sum(retain==F)==length(retain)) retain.eq.F <- F
-          else retain.eq.F <- T
+          if (sum(retain==F)==length(retain)) retain.eq.F <- FALSE
+          else retain.eq.F <- TRUE
         }
-#      if (sum(retain==F)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
+#      if (sum(retain==FALSE)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
       
 
-      if (sum(retain==F)==length(retain))
+      if (sum(retain==FALSE)==length(retain))
         {
           lambdas <- matrix(0,nrow=nx,ncol=ny)
           for(ix in 1:nx){for(iy in 1:ny){
-            lambdas[ix,iy] <- median(Lambda[ix,iy,],na.rm=T)}}
-          lambdamax <- max(lambdas,na.rm=T)
+            lambdas[ix,iy] <- median(Lambda[ix,iy,],na.rm=TRUE)}}
+          lambdamax <- max(lambdas,na.rm=TRUE)
           prob <-  lambda(x,y,times,...)/lambdamax
           retain <- u <= prob
-          if (sum(retain==F)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
+          if (sum(retain==FALSE)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
         }
 
       x <- x[retain]
@@ -406,7 +373,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           xy <- as.matrix(csr(poly=s.region,npoints=npoints-neffec))
           if(dim(xy)[2]==1){wx <- xy[1]; wy <- xy[2]}
           else{wx <- xy[,1]; wy <- xy[,2]}
-          if(replace==F)
+          if(replace==FALSE)
             { wsamp <- sample(samp.remain,npoints-neffec,replace=replace) }
           else{ wsamp <- sample(1:nt,npoints-neffec,replace=replace) }
           wtimes <- times.init[wsamp]
@@ -453,57 +420,6 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
 
 rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, ...)
 {
-  #
-  # Simulate a space-time Poisson process in a region D x T.
-  #
-  # Requires Splancs package.
-  #  
-  # Arguments:
-  #
-  #        lambda: Spatio-temporal intensity of the Poisson process. 
-  #                If 'lambda' is a single positive number, the function 
-  #			 generates realisations of a homogeneous Poisson process, 
-  # 			 whilst if 'lambda' is a function of the form 
-  #			 lambda(x,y,t,...) or a character it generates 
-  #   		 realisations of an inhomogeneous Poisson process.
-  #
-  #      s.region: two columns matrix specifying polygonal region containing
-  #                all data locations. If s.region is missing, the unit square
-  #                is considered.
-  #
-  #      t.region: vector containing the minimum and maximum values of
-  #                the time interval. If t.region is missing, the interval
-  #                [0,1] is considered.
-  #
-  #       replace: logical allowing times repetition.
-  #
-  #       npoints: number of points to simulate. If NULL (default), the
-  #                number of points is from a Poisson distribution with
-  #                mean the double integral of lambda over s.region and
-  #                t.region.
-  #
-  # discrete.time: if TRUE, times belong to N, otherwise belong to R+.
-  #
-  #          nsim: number of simulations to generate. Default is 1.
-  #
-  #      nx,ny,nt: define the 3-D grid on which the intensity is evaluated.
-  #
-  #          lmax: upper bound for the value of lambda(x,y,t), if lambda
-  #                is a function.
-  #
-  #	      Lambda: array of spatial intensity if 'lambda' is a character.
-  #
-  #
-  #
-  # Value:
-  #     xyt: matrix (or list if nsim>1) containing the points (x,y,t)
-  #           of the simulated point process.
-  #  Lambda: an array of the intensity surface  
-  #
-  # NB: the probability that an event occurs at a location s and a time t
-  #     is:
-  #     p(s,t)=lambda(s,t)/(max_{(s_i,t_i), i=1,...,ngrid} lambda(s_i,t_i)).
-  #
 
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
@@ -555,7 +471,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
     {
       s.grid <- make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
-      if (discrete.time==T)
+      if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
           if (nt>length(vect))
@@ -577,7 +493,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
       for(it in 1:nt)
         {
           L <- lambda(as.vector(s.grid$X),as.vector(s.grid$Y),t.grid$times[it],...)
-          M <- matrix(L,ncol=ny,nrow=nx,byrow=T)
+          M <- matrix(L,ncol=ny,nrow=nx,byrow=TRUE)
           M[!(s.grid$mask)] <- NaN
           Lambda[,,it] <- M
         }

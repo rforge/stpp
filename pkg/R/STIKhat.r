@@ -1,33 +1,6 @@
 STIKhat <- function(xyt, s.region, t.region, dist, times, lambda, correction = TRUE, infectious = TRUE) 
 {
-
-#  library(splancs)
-  #
-  # This function computes the space-time inhomogeneous K function.
-  #
-  # Arguments:
-  #  - xyt: coordinates and times of the point process,
-  #  - s.region: set of points defining the domain D,
-  #  - t.region: vector giving the lower and upper boundaries of T
-  #  - dist: vector of distances h at which K() is computed,
-  #  - times: vector of times t at which K() is computed,
-  #  - lambda: vector of values of the space-time intensity
-  #            function evaluated at the points of the pattern,
-  #  - correction: logical value. If True, the Ripley's edge correction
-  #                is used.
-  #  - infectious: logical value. If True, the STIK function is the one defined
-  #            in the case of infectious diseases.
-  #
-  # Value:
-  #  - Khat: a ndist x ntimes matrix containing the values of K(h,t),
-  #  - dist: the vector of distances used,
-  #  - times: the vector of times used.
-  #
-  #
-  # E. Gabriel, september 2005
-  #
-  # last modification: 25.10.2006
-  #
+require(splancs)
 
   if (missing(s.region)) s.region <- sbox(xyt[,1:2],xfrac=0.01,yfrac=0.01)
   if (missing(t.region)) t.region <- range(xyt[,3],na.rm=T)
@@ -65,9 +38,6 @@ STIKhat <- function(xyt, s.region, t.region, dist, times, lambda, correction = T
 
   if (area>10) lambda <- lambda*area
   
-#  dyn.load("/home/gabriel/functions/STIKfunction/libF/stikfunction.dll")
-#  pathname <- paste(path,"stikfunction.dll",sep="")
-#  dyn.load(pathname)
   nev <- rep(0,ntimes)
   klist <- .Fortran("stikfunction", as.double(ptsx),
                     as.double(ptsy), as.double(ptst), 
@@ -101,7 +71,7 @@ STIKhat <- function(xyt, s.region, t.region, dist, times, lambda, correction = T
   Khpp <- matrix(0,ncol=length(times),nrow=length(dist))
   for(i in 1:length(dist)){Khpp[i,]<-pi*(dist[i]^2)*times}
   
-  if (infectious==T) Ktheo <- Khpp
+  if (infectious==TRUE) Ktheo <- Khpp
   else Ktheo <- 2*Khpp
  
   lhat <- hkhat-Ktheo

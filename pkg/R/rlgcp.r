@@ -80,41 +80,6 @@ gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="ex
 
 rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
 {
-  #
-  # Simulate a space-time log-Gaussian point process in a region D x T.
-  #
-  # Requires Splancs.
-  #  
-  # Arguments:
-  #  
-  #  s.region: two columns matrix specifying polygonal region containing
-  #        all data locations. If poly is missing, the unit square is
-  #        considered.
-  #
-  #  t.region: vector containing the minimum and maximum values of
-  #            the time interval.
-  #
-  #   replace: logical allowing times repetition.
-  #
-  #   npoints: number of points to simulate. If NULL (default), the
-  #            number of points is from a Poisson distribution with
-  #            mean the double integral of lambda over s.region and
-  #            t.region.
-  #
-  #      nsim: number of simulations to generate. Default is 1.
-  #
-  #  nx,ny,nt: define the 3-D grid on which the intensity is evaluated.
-  #
-  #
-  # Value:
-  #  pattern: list containing the points (x,y,t) of the simulated point
-  #           process.
-  #  Lambda: an array of the intensity surface at each time.
-  #
-  # NB: the probability that an event occurs at a location s and a time t
-  #     is:
-  #     p(t)=lambda(s,t)/(max_{s_i, i=1,...,ngrid} lambda(s_i,t)).
-  #
   
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)

@@ -1,31 +1,5 @@
 animation <- function(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3", pch=19, cex=0.5, plot.s.region=TRUE, scales=TRUE, border.frac=0.05, add=FALSE)
 { 
-  #
-  # Description:
-  #   Animation of spatio-temporal point process data.
-  #   Requires splancs library
-  #
-  # Arguments:
-  #            xyt: data - matrix containing the (x,y,t)-coordinates
-  #        runtime: approximate running time of animation, in seconds
-  # 			  (but longer than expected...).	
-  #       s.region: two-column matrix specifying polygonal
-  #                 region containing all data-locations xyt[,1:2]
-  #       t.region: interval containing all data-times xyt[,3]
-  #       incident: colour in which incident point xyt[i,1:2] is
-  #                 plotted at time xyt[i,3]
-  #      prevalent: colour to which prevalent point xyt[i,1:2] fades
-  #                 at time xyt[i+1,3]
-  #            pch: plotting symbol usedfor each point 
-  #            cex: magnification of plotting symbol relative to standard size
-  #  plot.s.region: if true, plot s.region as polygon
-  #         scales: if true, plot X and Y axes with scales
-  #    border.frac: extent of border of plotting region surounding s.region,
-  #                 as fraction of ranges of X and Y
-  #
-  #
-
-
   if (missing(s.region)) s.region <- sbox(xyt[,1:2],xfrac=0.01,yfrac=0.01)
   if (missing(t.region)) t.region <- range(xyt[,3],na.rm=T)
   
