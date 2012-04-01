@@ -87,7 +87,7 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
           return(res)
         }
 
-  xy <- csr(n=1,poly=s.region)
+  xy <- csr(npoints=1,poly=s.region)
   npts <- 1
   pattern.interm <- cbind(x=xy[1],y=xy[2])
   if (inhibition==TRUE)
@@ -95,7 +95,7 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
       while(npts < npoints)
         {
           prob <- runif(1)
-          xy <- csr(n=1,poly=s.region)
+          xy <- csr(npoints=1,poly=s.region)
           if (all((sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2)) > delta))
             umax <- 1
             else			
@@ -116,7 +116,7 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
           continue <- FALSE
           while(continue==FALSE)
             {
-              xy <- csr(n=1,poly=s.region)
+              xy <- csr(npoints=1,poly=s.region)
               if (all(sqrt((xy[1] - pattern.interm[,1])^2 + (xy[2] - pattern.interm[,2])^2) < delta))
                 umax <- 1            
               else		

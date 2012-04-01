@@ -74,8 +74,8 @@
 }
 
 .store = function(panel){
- assign("t",panel$t,env=panel$e)
- assign("width",panel$width,env=panel$e)
+ assign("t",panel$t,envir=panel$e)
+ assign("width",panel$width,envir=panel$e)
  return(panel)
 }
 
@@ -165,7 +165,7 @@ XYT=as.3dpoints(X,Y,Z)
   env = .rp.stan3d(XYT,tlim,twid,states)
   ret=list()
   for(n in ls(env)){
-    ret[[n]]=get(n,env=env)
+    ret[[n]]=get(n,envir=env)
   }
   return(ret)
 }

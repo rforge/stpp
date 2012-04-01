@@ -134,7 +134,7 @@ t0, inhibition=FALSE, ...)
   ni <- 1
   while(ni<=nsim)
     {
-      xy <- csr(n=1,poly=s.region)
+      xy <- csr(npoints=1,poly=s.region)
       npts <- 1
       pattern.interm <- cbind(x=xy[1],y=xy[2],t=t0)
       Mu <- rep(0,nt)
@@ -260,7 +260,7 @@ t0, inhibition=FALSE, ...)
                      else
                        {
 				 uk <- runif(1)
-                         xy <- csr(n=1,poly=s.region)
+                         xy <- csr(npoints=1,poly=s.region)
                          xp <- xy[1]
                          yp <- xy[2]
                          
