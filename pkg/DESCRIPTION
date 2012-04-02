@@ -5,7 +5,8 @@ Version: 0.1
 Date: 2008-10-16
 Author: Edith Gabriel
 Maintainer: Edith Gabriel <edith.gabriel@univ-avignon.fr>
-Depends: R (>= 2.10), splancs, rpanel, rgl
+Depends: R (>= 2.10), splancs
+Suggests: rpanel, rgl
 Description: A package for analysing, simulating and displaying space-time point patterns
 License: GPL-3
 LazyLoad: yes
