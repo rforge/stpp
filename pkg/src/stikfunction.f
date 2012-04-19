@@ -156,7 +156,7 @@ c find the weight for the point at x,y, radius r
 c
       implicit real*8 (a-h,o-z)
 
-      include 'bounds.cmn'
+c      include 'bounds.cmn'
 
       dimension xp(np+1),yp(np+1)
 
@@ -187,7 +187,7 @@ c     of a circle of radius r is inside the bounding polygon
 c
 c
       implicit real*8 (a-h,o-z)
-      include 'bounds.cmn'
+c      include 'bounds.cmn'
       dimension xp(np+1),yp(np+1)
       parameter(pi=3.141592654d0)
 c     store circle/poly intersections here
@@ -435,7 +435,7 @@ c fortran version of C routine by Ken McElvain
 c
 
       implicit real*8 (a-h,o-z)
-      include 'bounds.cmn'
+c      include 'bounds.cmn'
 
 
       dimension xc(nc+1),yc(nc+1)
