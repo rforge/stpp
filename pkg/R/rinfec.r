@@ -21,7 +21,7 @@ t0, inhibition=FALSE, ...)
           ny <- dim(lambda)[2]
           Lambda <- lambda
         }
-      s.grid <- make.grid(nx,ny,s.region)
+      s.grid <- .make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
       if (is.function(lambda))
         {
@@ -139,7 +139,7 @@ t0, inhibition=FALSE, ...)
       pattern.interm <- cbind(x=xy[1],y=xy[2],t=t0)
       Mu <- rep(0,nt)
       ti <- t0
-      ITK <- iplace(t.grid$times,ti,t.grid$tinc)
+      ITK <- .iplace(t.grid$times,ti,t.grid$tinc)
       
       continue <- FALSE
       while(continue==FALSE)
@@ -173,7 +173,7 @@ t0, inhibition=FALSE, ...)
                 }
               else
                 {
-                  itk <- iplace(t.grid$times,tk,t.grid$tinc)
+                  itk <- .iplace(t.grid$times,tk,t.grid$tinc)
 
                  if ((mu[itk]==0) || ((h=="gaussian") && (mu[itk]<ug)))
                    {
@@ -224,8 +224,8 @@ t0, inhibition=FALSE, ...)
                                          xp <- xy[1]
                                          yp <- xy[2]
                                          up <- runif(1)
-                                         nix <- iplace(X=s.grid$x,x=xp,xinc=s.grid$xinc)
-                                         niy <- iplace(X=s.grid$y,x=yp,xinc=s.grid$yinc)
+                                         nix <- .iplace(X=s.grid$x,x=xp,xinc=s.grid$xinc)
+                                         niy <- .iplace(X=s.grid$y,x=yp,xinc=s.grid$yinc)
                                          Up <- Lambda[nix,niy]/lmax
                                          retain <- up <= Up
                                          if ((retain==FALSE) || is.na(retain))

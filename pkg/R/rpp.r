@@ -1,4 +1,4 @@
-make.grid <- function(nx,ny,poly)
+.make.grid <- function(nx,ny,poly)
   {
     if (missing(poly)) poly <- matrix(c(0,0,1,0,1,1,0,1),4,2,T)
     
@@ -47,7 +47,7 @@ make.grid <- function(nx,ny,poly)
     invisible(return(list(x=xgrid,y=ygrid,X=xx,Y=yy,pts=pts,xinc=xinc,yinc=yinc,mask=matrix(as.logical(mask),nx,ny))))
   }
 
-rhpp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discrete.time=FALSE)
+.rhpp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discrete.time=FALSE)
   {
     if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
     if (missing(t.region)) t.region <- c(0,1)
@@ -108,7 +108,7 @@ rhpp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
   }
 
 
-iplace <- function(X,x,xinc)
+.iplace <- function(X,x,xinc)
   {
     n <- length(X)
     i <- 0
@@ -123,7 +123,7 @@ iplace <- function(X,x,xinc)
   }
 
 
-ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, ...)
+.ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, ...)
 {
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
@@ -144,7 +144,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
 
   if (is.function(lambda))
     {
-      s.grid <- make.grid(nx,ny,s.region)
+      s.grid <- .make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
       if (discrete.time==TRUE)
         {
@@ -262,7 +262,7 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
       ny <- dim(Lambda)[2]
       nt <- dim(Lambda)[3]
       
-      s.grid <- make.grid(nx,ny,s.region)
+      s.grid <- .make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
 
       if (discrete.time==TRUE)
@@ -316,9 +316,9 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           prob <- NULL
           for(nx in 1:length(x))
             {
-              nix <- iplace(X=s.grid$x,x=x[nx],xinc=s.grid$xinc)
-              niy <- iplace(X=s.grid$y,x=y[nx],xinc=s.grid$yinc)
-              nit <- iplace(X=t.grid$times,x=times[nx],xinc=t.grid$tinc)
+              nix <- .iplace(X=s.grid$x,x=x[nx],xinc=s.grid$xinc)
+              niy <- .iplace(X=s.grid$y,x=y[nx],xinc=s.grid$yinc)
+              nit <- .iplace(X=t.grid$times,x=times[nx],xinc=t.grid$tinc)
               prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           
@@ -382,9 +382,9 @@ ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discret
           prob <- NULL
           for(nx in 1:length(wx))
             {
-              nix <- iplace(X=s.grid$x,x=wx[nx],xinc=s.grid$xinc)
-              niy <- iplace(X=s.grid$y,x=wy[nx],xinc=s.grid$yinc)
-              nit <- iplace(X=t.grid$times,x=wtimes[nx],xinc=t.grid$tinc)
+              nix <- .iplace(X=s.grid$x,x=wx[nx],xinc=s.grid$xinc)
+              niy <- .iplace(X=s.grid$y,x=wy[nx],xinc=s.grid$yinc)
+              nit <- .iplace(X=t.grid$times,x=wtimes[nx],xinc=t.grid$tinc)
               prob <- c(prob,(Lambda[nix,niy,nit])/lambdamax)
             }
           M <- which(is.na(prob))
@@ -447,7 +447,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
     {
       while(ni<=nsim)
         {
-          hpp <- rhpp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time)
+          hpp <- .rhpp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time)
           if (nsim==1)
             {
               pattern <- as.3dpoints(hpp$pts)
@@ -469,7 +469,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
 
   if (is.function(lambda))
     {
-      s.grid <- make.grid(nx,ny,s.region)
+      s.grid <- .make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
       if (discrete.time==TRUE)
         {
@@ -500,7 +500,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           
       while(ni<=nsim)
         {
-          ipp <- ripp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time, nx=nx, ny=ny, nt=nt, lmax=lmax, Lambda=Lambda, ...)
+          ipp <- .ripp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time, nx=nx, ny=ny, nt=nt, lmax=lmax, Lambda=Lambda, ...)
           
           if (nsim==1)
             {
@@ -520,7 +520,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
     {
       while(ni<=nsim)
         {
-          ipp <- ripp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time, nx=nx, ny=ny, nt=nt, lmax=lmax, Lambda=Lambda, ...)
+          ipp <- .ripp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time, nx=nx, ny=ny, nt=nt, lmax=lmax, Lambda=Lambda, ...)
           
           if (nsim==1)
             {

@@ -1,4 +1,4 @@
-spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inhibition=TRUE,...)
+.spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inhibition=TRUE,...)
   {
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
 
@@ -135,7 +135,7 @@ spatial.inhibition <- function(npoints,h,theta,delta,p,recent="all",s.region,inh
 }
 
 
-temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,discrete.time=FALSE,replace=FALSE,inhibition=TRUE)
+.temporal.inhibition <- function(npoints,h,theta,delta,p,recent="all",t.region,discrete.time=FALSE,replace=FALSE,inhibition=TRUE)
   {  
   if (missing(t.region)) t.region <- c(0,1)
 
@@ -307,8 +307,8 @@ rinter <- function(npoints,s.region,t.region,hs="step",gs="min",thetas=0,deltas,
   ni <- 1
   while(ni<=nsim)
     {
-      pattern.interm <- spatial.inhibition(npoints,h=hs,theta=thetas,delta=deltas,p=gs,recent=recent,s.region=s.region,inhibition=inhibition,...)$pts
-      times.interm <- temporal.inhibition(npoints,h=ht,theta=thetat,delta=deltat,p=gt,recent=recent,t.region=t.region,inhibition=inhibition,discrete.time=discrete.time,replace=replace,...)$times
+      pattern.interm <- .spatial.inhibition(npoints,h=hs,theta=thetas,delta=deltas,p=gs,recent=recent,s.region=s.region,inhibition=inhibition,...)$pts
+      times.interm <- .temporal.inhibition(npoints,h=ht,theta=thetat,delta=deltat,p=gt,recent=recent,t.region=t.region,inhibition=inhibition,discrete.time=discrete.time,replace=replace,...)$times
       
       if (nsim==1)
         {

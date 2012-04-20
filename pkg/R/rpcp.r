@@ -1,7 +1,7 @@
-itexp <- function(u, m, t) { -log(1-u*(1-exp(-t*m)))/m }
-rtexp <- function(n, m, t) { itexp(runif(n), m, t) }
+.itexp <- function(u, m, t) { -log(1-u*(1-exp(-t*m)))/m }
+.rtexp <- function(n, m, t) { .itexp(runif(n), m, t) }
 
-pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", dispersion, infecD=TRUE, larger.region, tronc=1, ...)
+.pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, cluster="uniform", dispersion, infecD=TRUE, larger.region, tronc=1, ...)
 {
   if (missing(cluster)) cluster <- "uniform"
   
@@ -129,9 +129,9 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
       if (t.distr=="trunc.exponential")
         {
           if (infecD==TRUE) 
-            zp <- zpar+rtexp(nc,m=1/dispersiont,t=tronc)
+            zp <- zpar+.rtexp(nc,m=1/dispersiont,t=tronc)
           else
-            zp <- zpar+sample(c(-1,1),1)*rtexp(nc,m=1/dispersiont,t=tronc)
+            zp <- zpar+sample(c(-1,1),1)*.rtexp(nc,m=1/dispersiont,t=tronc)
         }
 
       mask <- ((inout(as.points(x=xp,y=yp),poly=s.region)==T) & (zp > t.region[1] & zp < t.region[2]) & (sqrt( (((xpar-xp)^2)/dispersions^2) + (((ypar-yp)^2)/dispersions^2)) < 1))
@@ -192,9 +192,9 @@ pcp.larger.region <- function(s.region, t.region, nparents=NULL, npoints=NULL, l
       if (t.distr=="trunc.exponential")
         {
           if (infecD==TRUE) 
-            zp <- zpar+rtexp(1,m=1/dispersiont,t=tronc)
+            zp <- zpar+.rtexp(1,m=1/dispersiont,t=tronc)
           else
-            zp <- zpar+sample(c(-1,1),1)*rtexp(1,m=1/dispersiont,t=tronc)
+            zp <- zpar+sample(c(-1,1),1)*.rtexp(1,m=1/dispersiont,t=tronc)
         }
       
       if ((inout(as.points(x=xp,y=yp),poly=s.region)==T) & (zp > t.region[1] & zp < t.region[2]) & (sqrt( (((xpar-xp)^2)/dispersions^2) + (((ypar-yp)^2)/dispersions^2)) < 1))
@@ -246,10 +246,10 @@ rpcp <- function(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, m
   while(ni<=nsim)
     {
       if (edge=="larger.region")
-        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, dispersion=dispersion, infecD=infectious, larger.region=larger.region,tronc=tronc, ...)$pts
+        pattern.interm <- .pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, dispersion=dispersion, infecD=infectious, larger.region=larger.region,tronc=tronc, ...)$pts
 
       if (edge=="without")
-        pattern.interm <- pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, dispersion=dispersion, infecD=infectious, larger.region=c(0,0), tronc=tronc, ...)$pts
+        pattern.interm <- .pcp.larger.region(s.region=s.region, t.region=t.region, nparents=nparents, npoints=npoints, lambda=lambda, mc=mc, cluster=cluster, dispersion=dispersion, infecD=infectious, larger.region=c(0,0), tronc=tronc, ...)$pts
 
       if (nsim==1)
         pattern <- as.3dpoints(pattern.interm)
