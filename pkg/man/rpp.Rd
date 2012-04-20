@@ -44,7 +44,7 @@ rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
 A list containing:
 \item{xyt}{matrix (or list of matrices if \code{nsim}>1)
 containing the points (x,y,t) of the simulated point pattern.
-\code{xyt} (or any element of the list if \code{nsim}>1)) is an object 
+\code{xyt} (or any element of the list if \code{nsim}>1) is an object 
 of the class \code{stpp}.}
 \item{t.index}{vector of times index.}
 \item{Lambda}{nx x ny x nt array of the intensity surface at each time.}

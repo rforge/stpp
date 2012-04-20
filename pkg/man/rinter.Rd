@@ -50,7 +50,7 @@ in a region S x T.
 A list containing:
 \item{xyt}{matrix (or list of matrices if \code{nsim}>1)
 containing the points (x,y,t) of the simulated point pattern.
-\code{xyt} (or any element of the list if \code{nsim}>1)) is an object 
+\code{xyt} (or any element of the list if \code{nsim}>1) is an object 
 of the class \code{stpp}.}
 \item{s.region, t.region}{parameters passed in argument.}
 }
