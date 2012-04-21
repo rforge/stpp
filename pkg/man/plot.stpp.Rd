@@ -9,9 +9,9 @@ This function plot either xy-locations and cumulative distribution of the times
 or xy-locations with time treated as a quantitative mark attached to each location.}
 
 \usage{
-## S3 method for class 'stpp':
-plot(x, s.region=NULL, t.region=NULL, mark=FALSE, mark.cexmin=0.4, mark.cexmax=1.2, mark.col=1, ...)
-}
+\method{plot}{stpp}(x, s.region=NULL, t.region=NULL, mark=FALSE, mark.cexmin=0.4,
+     mark.cexmax=1.2, mark.col=1, ...)
+} 
 
 \arguments{
   \item{x}{any object of class \code{stpp} in spatio-temporal point format.}
