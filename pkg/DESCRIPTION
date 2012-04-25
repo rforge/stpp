@@ -3,7 +3,7 @@ Type: Package
 Title: Space-Time Point Pattern simulation, visualisation and analysis
 Version: 0.1
 Date: 2008-10-16
-Author: Edith Gabriel
+Authors: Edith Gabriel, Peter J Diggle, stan function by Barry Rowlingson
 Maintainer: Edith Gabriel <edith.gabriel@univ-avignon.fr>
 Depends: R (>= 2.10), splancs
 Suggests: rpanel, rgl
