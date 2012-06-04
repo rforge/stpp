@@ -1,7 +1,7 @@
 Package: stpp
 Type: Package
 Title: Space-Time Point Pattern simulation, visualisation and analysis
-Version: 0.2
+Version: 0.3
 Date: 2012-04-21
 Author: Edith Gabriel, Peter J Diggle, stan function by Barry Rowlingson
 Maintainer: Edith Gabriel <edith.gabriel@univ-avignon.fr>
