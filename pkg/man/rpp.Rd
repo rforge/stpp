@@ -8,8 +8,7 @@ Generate one (or several) realisation(s) of the (homogeneous or inhomogeneous) P
 
 \usage{
 rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
-    discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, 
-    Lambda=NULL, ...)
+    discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, ...)
 }
 
 \arguments{

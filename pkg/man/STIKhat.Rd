@@ -103,21 +103,21 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr> }
 \examples{\dontrun{
 data(fmd)
 data(northcumbria)
-FMD=as.3dpoints(fmd[,1]/1000,fmd[,2]/1000,fmd[,3])
+FMD<-as.3dpoints(fmd[,1]/1000,fmd[,2]/1000,fmd[,3])
 Northcumbria=northcumbria/1000
 
 # estimation of the temporal intensity
-Mt=density(FMD[,3],n=1000)
-mut=Mt$y[findInterval(FMD[,3],Mt$x)]*dim(FMD)[1]
+Mt<-density(FMD[,3],n=1000)
+mut<-Mt$y[findInterval(FMD[,3],Mt$x)]*dim(FMD)[1]
 
 # estimation of the spatial intensity
-h = mse2d(as.points(FMD[,1:2]), Northcumbria, nsmse=50, range=4)
-h = h$h[which.min(h$mse)]
-Ms = kernel2d(as.points(FMD[,1:2]), Northcumbria, h, nx=5000, ny=5000)
-atx=findInterval(x=FMD[,1],vec=Ms$x)
-aty=findInterval(x=FMD[,2],vec=Ms$y)
-mhat=NULL
-for(i in 1:length(atx)) mhat=c(mhat,Ms$z[atx[i],aty[i]])
+h<-mse2d(as.points(FMD[,1:2]), Northcumbria, nsmse=50, range=4)
+h<-h$h[which.min(h$mse)]
+Ms<-kernel2d(as.points(FMD[,1:2]), Northcumbria, h, nx=5000, ny=5000)
+atx<-findInterval(x=FMD[,1],vec=Ms$x)
+aty<-findInterval(x=FMD[,2],vec=Ms$y)
+mhat<-NULL
+for(i in 1:length(atx)) mhat<-c(mhat,Ms$z[atx[i],aty[i]])
 
 # estimation of the STIK function
 u <- seq(0,10,by=1)
