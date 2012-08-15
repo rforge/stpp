@@ -26,7 +26,7 @@ S x T.
   number of points is from a Poisson distribution with mean the double integral 
   of the intensity over \code{s.region} and \code{t.region}.} 
   \item{lambda}{intensity of the parent process. Can be either a numeric
-  value, a function, or a character (see \code{\link{rpp}}). 
+  value, a function, or a 3d-array (see \code{\link{rpp}}). 
    If \code{NULL}, it is constant and equal to \code{nparents} / volume
   of the domain.} 
   \item{mc}{average number of children per parent. It is used when
