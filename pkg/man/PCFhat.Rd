@@ -66,11 +66,11 @@ functions with bandwidth \eqn{h_s}{hs} and \eqn{h_t}{ht}.
 Experience with pair correlation function estimation recommends
 box kernels (the default), see Illian et al. (2008).
 Epanechnikov, Gaussian and biweight kernels are also
-implemented. Note that the bandwidths play an important role
-and their choice is crucial in the quality of the estimators as
-they heavily influence their variance. Whatever the kernel
-function, is the bandwidth is missing, a value is obtain from
-the function \code{dpik} of the package KernSmooth.}
+implemented. Whatever the kernel function, if the bandwidth is
+missing, a value is obtain from the function \code{dpik} of the
+package KernSmooth. Note that the bandwidths play an important
+role and their choice is crucial in the quality of the
+estimators as they heavily influence their variance. }
 
  \value{A list containing:
 
@@ -113,7 +113,5 @@ for(i in 1:length(atx)) mhat<-c(mhat,Ms$z[atx[i],aty[i]])
 # estimation of the pair correlation function
 g <- PCFhat(xyt=FMD, dist=1:20, times=1:20, lambda=lambda=mhat*mut/dim(FMD)[1], s.region=northcumbria/1000,t.region=c(1,200))
 
-# plotting the estimation
-plotPCF(g)
-plotPCF(g,persp=T,theta=-65,phi=35)
-}}
+# plotting the estimation plotPCF(g)
+plotPCF(g,persp=TRUE,theta=-65,phi=35) }}
