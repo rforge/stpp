@@ -122,7 +122,8 @@ for(i in 1:length(atx)) mhat<-c(mhat,Ms$z[atx[i],aty[i]])
 # estimation of the STIK function
 u <- seq(0,10,by=1)
 v <- seq(0,15,by=1)
-stik <- STIKhat(xyt=FMD, s.region=northcumbria/1000,t.region=c(1,200), lambda=mhat*mut/dim(FMD)[1], dist=u, times=v, infectious=T)
+stik <- STIKhat(xyt=FMD, s.region=northcumbria/1000,t.region=c(1,200), 
+lambda=mhat*mut/dim(FMD)[1], dist=u, times=v, infectious=TRUE)
 
 # plotting the estimation
 plotK(stik)

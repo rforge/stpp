@@ -48,8 +48,7 @@ of events \eqn{x_i: i=1,...n}{xi: i=1...,n} on a
 spatio-temporal region \eqn{S \times T}{SxT}, where S is an
 arbitrary polygon and \eqn{T=[T_0,T_1]}{T=[T0,T1]}: \deqn{
   \widehat g(u,v) =  \frac{1}{|S \times T|} \sum_{i=1}^{n}
-  \sum_{j \neq j}^{n} \frac{1}{w_{ij} v_{ij}} \frac{k_{s}(u - \|s_i-s_j\|)k_{t}(v-|t_i-t_j|)}{\lambda(x_i) \lambda(x_j)}{\bf 1}_{\left\lbrace u_{ij} \leq u
-  \right\rbrace}}{g(u,v) = 1/|SxT| sum_{i=1,...,n}
+  \sum_{j \neq j}^{n} \frac{1}{w_{ij} v_{ij}} \frac{k_{s}(u - \|s_i-s_j\|)k_{t}(v-|t_i-t_j|)}{\lambda(x_i) \lambda(x_j)}}{g(u,v) = 1/|SxT| sum_{i=1,...,n}
   sum_{j=1,...,n; j \neq j} 1/(wij*vij)  ks(u -
   ||si-sj||)kt(v-|ti-tj|)/(lambda(xi)lambda(xj))}
 To deal with spatial edge-effects, we use Ripley's method, in
@@ -111,7 +110,8 @@ mhat<-NULL
 for(i in 1:length(atx)) mhat<-c(mhat,Ms$z[atx[i],aty[i]])
 
 # estimation of the pair correlation function
-g <- PCFhat(xyt=FMD, dist=1:20, times=1:20, lambda=lambda=mhat*mut/dim(FMD)[1], s.region=northcumbria/1000,t.region=c(1,200))
+g <- PCFhat(xyt=FMD, dist=1:20, times=1:20, lambda=mhat*mut/dim(FMD)[1],
+ s.region=northcumbria/1000,t.region=c(1,200))
 
 # plotting the estimation plotPCF(g)
 plotPCF(g,persp=TRUE,theta=-65,phi=35) }}
