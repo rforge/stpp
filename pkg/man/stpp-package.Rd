@@ -1,5 +1,6 @@
 \name{stpp}
 \docType{package}
+\alias{stpp}
 \alias{stpp-package}
 
 \title{Space-Time Point Pattern simulation, visualisation and analysis}
@@ -19,6 +20,8 @@ The \code{stpp} package depends upon some other packages:
 
 \code{rpanel}: simple interactive controls for R using
 \code{tcltk} package
+
+\code{KernSmooth}: functions for kernel smoothing for Wand & Jones (1995)
 }
 
 \details{
