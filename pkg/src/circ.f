@@ -175,13 +175,19 @@ c
 c
 c     model = 7 (Matern)
 c
-
       if(model(1).eq.7) then
          theta(1) = 1d0
-         theta(2) = 1d0
+         theta(2) = p3
          theta(3) = p1
          mods = matern(theta,dx)
       endif 
+
+      if(model(2).eq.7) then
+         theta(1) = 1d0
+         theta(2) = p4
+         theta(3) = p2
+         modt = matern(theta,dt)
+      endif
 
 c      
 c     product
@@ -346,8 +352,8 @@ c
         t2l = one/theta(2)
         t3  = theta(3)
 c
-c        t2  = two*dsqrt(t3)*t2l
-        t2 = t21
+        t2  = two*dsqrt(t3)*t2l
+c        t2 = t21
 c     
         d = x
         if( d .le. zero ) then
