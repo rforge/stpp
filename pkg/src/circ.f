@@ -32,7 +32,7 @@ c=====================================================================
                NK = I+1+J*M(1)+K*M(1)*M(2)
                if ((I.le.MHALF(1)) .and. (J.le.MHALF(2)) 
      &              .and. (K.le.MHALF(3))) then
-                  CEM(NK) = COV3(gk(DBLE(I)/DBLE(N(1)),xlim,dble(N(1))),
+                CEM(NK) = COV3(gk(DBLE(I)/DBLE(N(1)),xlim,dble(N(1))),
      &                 gk(DBLE(J)/DBLE(N(2)),ylim,dble(N(2))),
      &                 gk(DBLE(K)/DBLE(N(3)),tlim,dble(N(3))),
      &                 model,param,sigma2,scale)
